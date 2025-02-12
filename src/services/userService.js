@@ -1,7 +1,5 @@
 import axios from "axios";
 
-
-
 export const updateUser = async (userId, userData) => {
     try {
         const response = await axios.put(`/api/users/update/${userId}`, userData, {

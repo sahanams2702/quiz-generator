@@ -4,7 +4,7 @@
 
 
 
-// const SECRET_KEY = "your-secret-key"; // Use env variable in production
+// const SECRET_KEY = "your-secret-key"; 
 
 // export function verifyToken(token: any) {
 //   try {

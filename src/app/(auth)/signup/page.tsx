@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
-import {signupUser} from "@/services/authService";
+import { signupUser } from "./action";
+
 import {
   Card,
   CardContent,

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Header from '@/components/header';
-import { loginUser } from '@/services/authService';
+import { loginUser } from './action';
 
 export default function SignIn() {
   const router = useRouter();
