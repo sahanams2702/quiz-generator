@@ -11,7 +11,7 @@ export default function About() {
       <Header/>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-10 px-4">
         <div className="container mx-auto text-center md:flex items-center justify-between">
           <div className="md:w-1/2">
             <h1 className="text-4xl font-bold mb-6">About QuizGenius</h1>
@@ -36,20 +36,20 @@ export default function About() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard
               icon={Brain}
-              title="AI-Powered Learning"
-              description="Our advanced AI algorithms create personalized quizzes tailored to your learning style and progress."
+              title="Transforming Learning with AI"
+              description="We revolutionize education by harnessing AI technology to create personalized quizzes that adapt to your learning style and progress, making education more engaging and effective.."
               image="/assets/images/ab1.jpg"
             />
             <FeatureCard
               icon={Target}
-              title="Targeted Practice"
-              description="Focus on areas where you need improvement with our adaptive learning system."
+              title="Our Technology"
+              description="Using the AI models, our platform generates quizzes on-the-fly with real-time feedback, personalized recommendations ensuring continuous learning improvement."
               image="/assets/images/ab2.webp"
             />
             <FeatureCard
               icon={Users}
-              title="Community Learning"
-              description="Join a community of learners and share knowledge through collaborative features."
+              title="Our Commitment"
+              description="We are committed to building an adaptive learning platform that evolves with you, tracking performance and providing personalized resources to make learning efficient, enjoyable, and tailored to your needs"
               image="/assets/images/ab3.webp"
             />
           </div>
@@ -75,9 +75,7 @@ export default function About() {
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <Award className="h-12 w-12 mx-auto text-primary mb-4" />
             <p className="text-lg text-muted-foreground">
-              At QuizGenius, we believe that everyone deserves access to high-quality education.
-              Our platform combines cutting-edge AI technology with proven learning methodologies
-              to create an engaging and effective learning experience.
+              At QuizeZ, Our mission is to create a smarter, more personalized learning experience using AI technology. We empower learners with dynamic quizzes that adapt to their progress, offering real-time feedback and tailored recommendations, making learning accessible, engaging, and effective for all.
             </p>
             <div>
               <img 

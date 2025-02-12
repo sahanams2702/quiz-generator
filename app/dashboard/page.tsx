@@ -6,17 +6,17 @@ export default function Dashboard() {
     <div
       className="space-y-8"
       style={{
-        backgroundImage: "url('/assets/images/dashboard.jpg')", // Path to your image in the public folder
+        // Path to your image in the public folder
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',
       }}
     >
-      <div className="container mx-auto py-12 px-4">
+      <div className="container mx-auto bg-gradient-to-br from-violet-400 to-blue-400 py-12 px-4 min-h-screen">
         <h1 className="text-3xl font-bold text-white">Dashboard</h1>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-8">
-          <Card>
+          <Card className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Quizzes</CardTitle>
               <Brain className="h-4 w-4 text-muted-foreground" />
@@ -26,7 +26,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Topics Covered</CardTitle>
               <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -36,7 +36,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Average Score</CardTitle>
               <Award className="h-4 w-4 text-muted-foreground" />
@@ -46,7 +46,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Time Spent</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />

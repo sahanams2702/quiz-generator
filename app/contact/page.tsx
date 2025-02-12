@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Brain } from 'lucide-react';
 import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 export default function Contact() {
   const { toast } = useToast();
@@ -35,7 +36,7 @@ export default function Contact() {
       <Header/>
 
       {/* Contact Section */}
-      <div className="container mx-auto py-20 px-4">
+      <div className="container mx-auto py-5 px-4">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-4">Contact Us</h1>
           <p className="text-xl text-muted-foreground text-center mb-12">
@@ -111,7 +112,7 @@ export default function Contact() {
                   <Mail className="h-6 w-6 text-primary mt-1" />
                   <div>
                     <h4 className="font-medium">Email</h4>
-                    <p className="text-muted-foreground">support@quizgenius.com</p>
+                    <p className="text-muted-foreground">support@quizeZ.com</p>
                   </div>
                 </div>
 
@@ -149,6 +150,8 @@ export default function Contact() {
           
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
+

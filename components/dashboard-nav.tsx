@@ -5,6 +5,9 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import {
   Brain,
   LayoutDashboard,
@@ -16,15 +19,18 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Create Quiz', href: '/dashcreate/page.jsx', icon: PlusCircle },
-  { name: 'History', href: '/dashhistory', icon: History },
-  { name: 'Profile', href: '/dashboard/profile', icon: UserCircle },
+  { name: 'Create Quiz', href: '/create-quiz', icon: PlusCircle },
+  { name: 'History', href: '/history', icon: History },
+  { name: 'Profile', href: '/profile', icon: UserCircle },
 ];
 
-export function DashboardNav() {
+export default function DashboardNav() {
+  const router = useRouter();
   const pathname = usePathname();
 
   const handleLogout = () => {
+    router.push('/about');
+
     // TODO: Implement logout logic
   };
 
