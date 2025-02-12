@@ -14,3 +14,4 @@ export async function POST(req) {
         return NextResponse.json({ error: "Quiz creation failed" }, { status: 500 });
     }
 }
+    
