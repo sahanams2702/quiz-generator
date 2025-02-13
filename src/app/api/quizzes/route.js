@@ -1,6 +1,16 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-// import { generateQuizQuestions } from "@/services/aiService"; 
+import { NextResponse } from "next/server";
+
+export async function GET(req) {
+    const quizzes = await prisma.quiz.findMany({
+        orderBy: {
+            createdAt: "desc"
+        }
+    });
+
+    return NextResponse.json(quizzes, { status: 200 });
+}
+
 
 export async function POST(req) {
     try {

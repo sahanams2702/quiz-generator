@@ -20,7 +20,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
 
-  quizzes Quiz[]
+  quizzes Quiz[] // No need to define onDelete here
 }
 
 model Quiz {
@@ -32,7 +32,7 @@ model Quiz {
   typeOfQuestions  String
   createdAt        DateTime @default(now())
 
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade) // Deleting user deletes quizzes
   mcqs    MCQ[]
   msqs    MSQ[]
   fibs    FIB[]
@@ -48,7 +48,7 @@ model MCQ {
   option4      String
   correctAnswer String
 
-  quiz  Quiz @relation(fields: [quizId], references: [id])
+  quiz  Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade) // Deleting quiz deletes MCQs
 }
 
 model MSQ {
@@ -61,7 +61,7 @@ model MSQ {
   option4       String
   correctAnswers String[]
 
-  quiz  Quiz @relation(fields: [quizId], references: [id])
+  quiz  Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade) // Deleting quiz deletes MSQs
 }
 
 model FIB {
@@ -70,6 +70,5 @@ model FIB {
   questionText String
   correctAnswer String
 
-  quiz  Quiz @relation(fields: [quizId], references: [id])
+  quiz  Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade) // Deleting quiz deletes FIBs
 }
-
