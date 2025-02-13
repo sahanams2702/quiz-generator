@@ -1,157 +1,114 @@
-'use client';
-
-import { useState } from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import Link from 'next/link';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { Brain } from 'lucide-react';
+import React from 'react';
+import { Mail, Phone, MapPin, MessageSquare } from 'lucide-react';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 
+
 export default function Contact() {
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // TODO: Implement actual contact form submission
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: 'Message Sent',
-        description: "We'll get back to you as soon as possible.",
-      });
-    }, 1000);
-  };
-
   return (
     <div className="min-h-screen bg-background">
-      {/* Sticky Navbar */}
-      <Header/>
-
-      {/* Contact Section */}
-      <div className="container mx-auto py-5 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-4">Contact Us</h1>
-          <p className="text-xl text-muted-foreground text-center mb-12">
-            Have questions? We'd love to hear from you.
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8"> {/* Added padding-top and padding-bottom */}
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+            Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Touch</span>
+          </h1>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
+        </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <div className="space-y-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Input
-                    type="text"
-                    placeholder="Your Name"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Input
-                    type="email"
-                    placeholder="Email Address"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Input
-                    type="text"
-                    placeholder="Subject"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Textarea
-                    placeholder="Your Message"
-                    className="min-h-[150px]"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    'Sending...'
-                  ) : (
-                    <>
-                      Send Message
-                      <Send className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              </form>
-            </div>
-            <div className="mt-12 text-center">
-            <img
-              src="/assets/images/call.jpg" // Replace with the actual image path
-              alt="Contact Us"
-              className="w-full md:w-7/8 mx-auto rounded-lg shadow-lg"
-            />
-          </div>
-            {/* Contact Information */}
-            <div className="lg:pl-12 space-y-8">
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Contact Form */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+            <form className="space-y-6">
               <div>
-                <h3 className="text-xl font-semibold mb-4">Get in Touch</h3>
-                <p className="text-muted-foreground mb-6">
-                  Have questions about our platform? Want to partner with us? We'd love to hear from you!
-                </p>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="Your name"
+                />
               </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  rows={4}
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="Your message"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-md hover:from-purple-700 hover:to-pink-700 transition-colors"
+              >
+                Send Message
+              </button>
+            </form>
+          </div>
 
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <Mail className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h4 className="font-medium">Email</h4>
-                    <p className="text-muted-foreground">support@quizeZ.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <Phone className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h4 className="font-medium">Phone</h4>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <MapPin className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h4 className="font-medium">Location</h4>
-                    <p className="text-muted-foreground">
-                      123 Learning Street<br />
-                      Education City, 12345
-                    </p>
-                  </div>
+          {/* Contact Information */}
+          <div className="space-y-8">
+            <div className="bg-purple-50 dark:bg-gray-800 rounded-xl p-6">
+              <div className="flex items-center space-x-4">
+                <Mail className="h-6 w-6 text-purple-600" />
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Email</h3>
+                  <p className="text-gray-600 dark:text-gray-300">support@QuizEZ.com</p>
                 </div>
               </div>
+            </div>
 
-              <div className="p-6 bg-card rounded-lg border">
-                <h4 className="font-medium mb-2">Office Hours</h4>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-                  <p>Saturday: 10:00 AM - 4:00 PM</p>
-                  <p>Sunday: Closed</p>
+            <div className="bg-pink-50 dark:bg-gray-800 rounded-xl p-6">
+              <div className="flex items-center space-x-4">
+                <Phone className="h-6 w-6 text-pink-600" />
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Phone</h3>
+                  <p className="text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-orange-50 dark:bg-gray-800 rounded-xl p-6">
+              <div className="flex items-center space-x-4">
+                <MapPin className="h-6 w-6 text-orange-600" />
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Location</h3>
+                  <p className="text-gray-600 dark:text-gray-300">123 Quiz Street, Learning City</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-purple-50 dark:bg-gray-800 rounded-xl p-6">
+              <div className="flex items-center space-x-4">
+                <MessageSquare className="h-6 w-6 text-purple-600" />
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">Live Chat</h3>
+                  <p className="text-gray-600 dark:text-gray-300">Available 24/7</p>
                 </div>
               </div>
             </div>
           </div>
-
-          
         </div>
       </div>
       <Footer />
     </div>
   );
 }
-

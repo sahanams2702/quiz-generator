@@ -12,7 +12,7 @@ export default function Dashboard() {
         minHeight: '100vh',
       }}
     >
-      <div className="container mx-auto bg-gradient-to-br from-violet-400 to-blue-400 py-12 px-4 min-h-screen">
+      <div className="container mx-auto bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 to-orange-500  py-12 px-4 min-h-screen">
         <h1 className="text-3xl font-bold text-white">Dashboard</h1>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-8">

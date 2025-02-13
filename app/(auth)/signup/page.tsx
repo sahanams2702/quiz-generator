@@ -91,7 +91,7 @@ export default function SignUp() {
         <div className="flex w-full max-w-5xl mx-auto">
           {/* Left side - Image */}
           <div className="flex-1 hidden md:block">
-            <img src="/assets/images/signuppp.png" alt="SignUp Image" className="w-full h-[600px] object-cover" />
+            <img src="/assets/images/SiUp.png" alt="SignUp Image" className="w-full h-[600px] object-cover" />
           </div>
 
           {/* Right side - Form */}
@@ -101,7 +101,10 @@ export default function SignUp() {
                 <div className="flex items-center justify-center mb-4">
                   <Brain className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="text-2xl text-center">Create an account</CardTitle>
+                <CardTitle className="text-2xl text-center bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-transparent bg-clip-text">
+  Create an account
+</CardTitle>
+
                 <CardDescription className="text-center">
                   Enter your details to create your account
                 </CardDescription>
@@ -151,9 +154,14 @@ export default function SignUp() {
                   {error && (
                     <div className="text-sm text-red-500 text-center">{error}</div>
                   )}
-                  <Button className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? 'Creating account...' : 'Create Account'}
-                  </Button>
+                  <Button 
+  className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-opacity-50" 
+  type="submit" 
+  disabled={isLoading}
+>
+  {isLoading ? 'Creating account...' : 'Create Account'}
+</Button>
+
                 </form>
                 <div className="flex justify-center mt-4">
                   <p className="text-center">or</p>
@@ -174,9 +182,8 @@ export default function SignUp() {
 
                 <div className="text-center text-sm mt-4">
                   Already have an account?{' '}
-                  <Link href="/signin" className="text-primary hover:underline">
-                    Sign in
-                  </Link>
+                  <Link href="/signin" className="text-purple-500 hover:underline"> Sign in </Link>
+
                 </div>
               </CardContent>
             </Card>

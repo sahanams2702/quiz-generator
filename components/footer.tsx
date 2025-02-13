@@ -9,7 +9,8 @@ export default function Footer() {
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <Brain className="h-5 w-5 text-primary" />
-              <span className="font-bold text-lg">QuizGenius</span>
+              <span className="font-semibold text-sm mb-3 bg-clip-text text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">QuizEZ</span>
+
             </div>
             <p className="text-xs text-muted-foreground">
   Unlock instant, AI-powered quizzes and challenge your brain like never before!
@@ -31,7 +32,7 @@ export default function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="font-semibold text-sm mb-3">Quick Links</h3>
+            <h3 className="font-semibold text-sm mb-3 bg-clip-text text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">Quick Links</h3>
             <ul className="space-y-1 text-xs">
               <li>
                 <Link href="/" className="text-muted-foreground hover:text-primary">Home</Link>
@@ -45,7 +46,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-sm mb-3">Contact</h3>
+            <h3 className="font-semibold text-sm mb-3 bg-clip-text text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">Contact</h3>
             <ul className="space-y-2 text-xs">
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />

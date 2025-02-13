@@ -39,7 +39,9 @@ export default function DashboardNav() {
       <div className="flex h-14 items-center border-b px-4">
         <Link href="/dashboard" className="flex items-center space-x-2">
           <Brain className="h-6 w-6 text-primary" />
-          <span className="font-bold">QuizeZ</span>
+          <span className="font-bold text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 bg-clip-text">
+  QuizEZ</span>
+
         </Link>
       </div>
 

@@ -35,7 +35,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-500 flex">
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex">
       {/* Fixed Dashboard Navbar */}
       <div className="fixed w-1/5 h-full bg-white shadow-md z-10">
         <DashboardNav />

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Header from '@/components/header';
+import Footer from '@/components/footer';
 
 export default function About() {
   return (
@@ -11,20 +12,22 @@ export default function About() {
       <Header/>
 
       {/* Hero Section */}
-      <section className="py-10 px-4">
+      <section className="py-2 px-4">
         <div className="container mx-auto text-center md:flex items-center justify-between">
           <div className="md:w-1/2">
-            <h1 className="text-4xl font-bold mb-6">About QuizGenius</h1>
+          <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">
+  About QuizEZ
+</h1>
+
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We're revolutionizing learning through AI-powered quizzes and personalized education.
-              Our mission is to make learning more engaging, effective, and accessible for everyone.
+            "we’re revolutionizing learning with AI-powered quizzes that enhances your progress, making education more engaging and personalized. Our mission is to empower learners through dynamic, real-time feedback and tailored challenges for every subject".
             </p>
           </div>
           <div className="md:w-1/2 mt-8 md:mt-0">
             <img 
-              src="/assets/images/about.jpg" 
+              src="/assets/images/about.png" 
               alt="QuizGenius Hero" 
-              className="rounded-lg shadow-lg object-cover w-full h-full"
+              className="rounded-lg shadow-lg object-cover w-full h-full opacity-85"
             />
           </div>
         </div>
@@ -32,8 +35,8 @@ export default function About() {
 
       {/* Features Grid */}
       <section className="py-16 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="container mx-auto px-4 ">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 ">
             <FeatureCard
               icon={Brain}
               title="Transforming Learning with AI"
@@ -43,7 +46,7 @@ export default function About() {
             <FeatureCard
               icon={Target}
               title="Our Technology"
-              description="Using the AI models, our platform generates quizzes on-the-fly with real-time feedback, personalized recommendations ensuring continuous learning improvement."
+              description="Using the advanced AI models, our platform dynamically generates quizzes on-the-fly with real-time feedback, personalized recommendations, and adaptive learning features ensuring continuous learning improvement."
               image="/assets/images/ab2.webp"
             />
             <FeatureCard
@@ -60,22 +63,22 @@ export default function About() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <StatCard number="10k+" label="Active Users" />
-            <StatCard number="50k+" label="Quizzes Completed" />
-            <StatCard number="95%" label="Success Rate" />
-            <StatCard number="100+" label="Topics Covered" />
+            <StatCard number="10+" label="Number of Users" />
+            <StatCard number="50+" label="Number of Quizzes generated" />
+            <StatCard number="9" label="Active users" />
+            <StatCard number="10+" label="Topics Covered" />
           </div>
         </div>
       </section>
 
       {/* Team Section */}
-      <section className="py-16 bg-card">
+      {/* <section className="py-16 bg-card">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Our Mission</h2>
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <Award className="h-12 w-12 mx-auto text-primary mb-4" />
             <p className="text-lg text-muted-foreground">
-              At QuizeZ, Our mission is to create a smarter, more personalized learning experience using AI technology. We empower learners with dynamic quizzes that adapt to their progress, offering real-time feedback and tailored recommendations, making learning accessible, engaging, and effective for all.
+              At QuizEZ, Our mission is to create a smarter, more personalized learning experience using AI technology. We empower learners with dynamic quizzes that adapt to their progress, offering real-time feedback and tailored recommendations, making learning accessible, engaging, and effective for all.
             </p>
             <div>
               <img 
@@ -86,7 +89,8 @@ export default function About() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
+      <Footer/>
     </div>
   );
 }

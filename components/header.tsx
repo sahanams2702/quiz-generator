@@ -10,9 +10,12 @@ const Header = () => {
       <div className="container mx-auto flex h-16 items-center justify-between px-3">
         <div className="flex items-center space-x-2">
           <Brain className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl">QuizeZ</span>
+          <span className="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
+            QuizEZ
+          </span>
         </div>
-        <nav className="hidden md:flex items-center space-x-6">
+
+        <nav className="hidden md:flex items-center space-x-6 text-lg">
           {/* Use Link for client-side routing */}
           <Link href="/" className="text-sm font-medium hover:text-primary">
             Home

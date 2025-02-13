@@ -7,14 +7,14 @@ import DashboardNav from '@/components/dashboard-nav'; // Import your Dashboard 
 
 export default function History() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-500 flex">
+    <div className="min-h-screenbg-gradient-to-br from-purple-400 via-pink-500 to-orange-500  flex">
       {/* Fixed Dashboard Navbar */}
       <div className="fixed w-1/4 h-full">
         <DashboardNav />
       </div>
 
       {/* Content Section */}
-      <div className="flex-1 ml-[25%] px-4 py-12 flex justify-center items-cebg-gradient-to-br from-blue-200 to-blue-500 nter"> {/* Added flex, justify-center, items-center */}
+      <div className="flex-1 ml-[25%] px-4 py-12 flex justify-center items-center bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 nter"> {/* Added flex, justify-center, items-center */}
         <div className="container mx-auto p-8 rounded-2xl shadow-xl w-full max-w-3xl"> {/* Set max width to center cards */}
           <h1 className="text-3xl font-bold text-white mb-6 text-center">History</h1>
           

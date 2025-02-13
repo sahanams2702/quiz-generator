@@ -44,22 +44,22 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex">
       {/* Fixed Dashboard Navbar */}
       <div className="fixed">
         <DashboardNav />
       </div>
 
       {/* Content Section (quiz form) */}
-      <div className="bg-gradient-to-br from-blue-200 to-blue-500 flex-1 ml-[10%] px-8 py-12 flex justify-center items-center">
+      <div className="bg-gradient-to-br  bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex-1 ml-[10%] px-8 py-12 flex justify-center items-center">
         {/* Adjusted margin-left to account for the fixed navbar */}
         <div className="max-w-7xl mx-auto">
-          <div className="bg-gradient-to-br from-teal-400 to-blue-500 rounded-2xl shadow-xl p-8 space-y-8 ">
+        <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8 w-[600px]">
             {/* Cancel Button */}
             <div className="flex justify-between items-center mb-4">
               <div className="text-center">
-                <h1 className="text-3xl font-bold justify-center mb-4 text-white">Create New Quiz</h1>
-                <p className="mt-2 text-white">Fill in the details to generate your quiz</p>
+                <h1 className="text-3xl font-bold justify-center mb-4 text-black">Create New Quiz</h1>
+                <p className="mt-2 text-black">Fill in the details to generate your quiz</p>
               </div>
             </div>
 
@@ -137,7 +137,7 @@ function App() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition hover:scale-[1.02]"
+                className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition hover:scale-[1.02]"
               >
                 Create Quiz
               </button>
