@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Brain } from 'lucide-react';
@@ -24,21 +25,18 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-  
     // Validate email format
     if (!emailRegex.test(email)) {
       setError('Invalid email format. Please follow the correct format (example@domain.com).');
       setIsLoading(false);
       return;
     }
-  
     // Validate password format
     if (!passwordRegex.test(password)) {
       setError('Password must be 8-32 characters long and include 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character.');
       setIsLoading(false);
       return;
     }
-  
     // Check if the user is admin
     if (email === 'admin222@quizez.com' && password === 'Admin@123') {
       setIsLoading(false);
@@ -49,23 +47,47 @@ export default function SignIn() {
       router.push('/quizzes'); // Redirect to Admin Dashboard
       return;
     }
-  
     // Check if user exists in localStorage
     const storedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
-  
     if (!storedUserData || storedUserData.email !== email) {
       setIsLoading(false);
-      alert('Oops! You haven’t registered yet.');
-      return;
+      swal.fire({
+        title: "<strong>Oops! You haven’t registered yet.</strong>",
+        icon: "info",
+        html: `
+<div class="text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text">
+            Please register with us.
+</div>
+        `,
+        showCloseButton: true,
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: `
+<i class="fa fa-thumbs-up" style="color: white;"></i> OK
+        `,
+        confirmButtonAriaLabel: "Thumbs up, great!",
+        cancelButtonText: `
+<i class="fa fa-thumbs-down" style="color: white;"></i>
+        `,
+        cancelButtonAriaLabel: "Thumbs down",
+        customClass: {
+          popup: '!bg-black !text-white',
+          title: 'text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text',
+          closeButton: '!text-white',
+          actions: '!text-white'
+        },
+        buttonsStyling: false,
+        background: '#000',
+        confirmButtonColor: 'transparent',
+        cancelButtonColor: 'transparent'
+      });
     }
-  
     // Check password
     if (storedUserData.password !== password) {
       setError('Incorrect password.');
       setIsLoading(false);
       return;
     }
-  
     // Successful login
     setIsLoading(false);
     toast({
@@ -74,7 +96,7 @@ export default function SignIn() {
     });
     router.push('/dashboard'); // Redirect to User Dashboard
   };
-  
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -132,9 +154,9 @@ export default function SignIn() {
                 </form>
 
                 <div className="text-center text-sm mt-3">
-                <Link href="/forgot-password" className="text-blue-500 hover:underline">
-  Forgot Password?
-</Link>
+                  <Link href="/forgot-password" className="text-blue-500 hover:underline">
+                    Forgot Password?
+                  </Link>
 
                 </div>
 

@@ -71,7 +71,7 @@ export default function Users() {
                   <div className="flex items-center gap-8">
                     <div className="text-center">
                       <p className="text-2xl font-bold">{participant.quizzesGenerated}</p>
-                      <p className="text-sm text-muted-foreground">Quizzes Taken</p>
+                      <p className="text-sm text-muted-foreground">Quizzes Generated</p>
                     </div>
                     <Button
                       variant="ghost"

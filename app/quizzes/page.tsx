@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/dashboard/sidebar';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
@@ -11,9 +11,8 @@ const quizzes = [
   {
     id: 1,
     title: 'JavaScript Fundamentals',
-    Users: 45,
     nameOfUser: 'John Doe',
-    type: 'MCQ',
+    type: ['MCQ', 'MSQ'],  // Multiple types (MCQ and MSQ)
     level: 'Intermediate',
     questions: [
       {
@@ -41,9 +40,8 @@ const quizzes = [
   {
     id: 2,
     title: 'React Hooks Deep Dive',
-    Users: 32,
     nameOfUser: 'John',
-    type: 'MSQ',
+    type: ['MSQ', 'FIB'],  // Multiple types (MSQ and FIB)
     level: 'Advanced',
     questions: [
       {
@@ -61,9 +59,8 @@ const quizzes = [
   {
     id: 3,
     title: 'TypeScript Basics',
-    Users: 28,
     nameOfUser: 'sana',
-    type: 'FIB',
+    type: ['FIB'],  // Single type (FIB)
     level: 'Easy',
     questions: [
       {
@@ -75,9 +72,8 @@ const quizzes = [
   {
     id: 4,
     title: 'Next.js Masterclass',
-    Users: 38,
     nameOfUser: 'paddu',
-    type: 'MCQ',
+    type: ['MCQ', 'FIB'],  // Multiple types (MCQ and FIB)
     level: 'Advanced',
     questions: [
       {
@@ -119,8 +115,12 @@ export default function Quizzes() {
                   </div>
                   <div className="flex items-center gap-8">
                     <div className="text-center">
-                      <p className="text-2xl font-bold">{quiz.Users}</p>
-                      <p className="text-sm text-muted-foreground">Users</p>
+                      <p className="text-2xl font-bold">{quiz.questions.length}</p>
+                      <p className="text-sm text-muted-foreground">Questions</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold">{quiz.type.join(', ')}</p>
+                      <p className="text-sm text-muted-foreground">Type of questions</p>
                     </div>
                     <Dialog>
                       <DialogTrigger asChild>
@@ -130,15 +130,13 @@ export default function Quizzes() {
                         <DialogHeader>
                           <div className="flex items-center justify-between">
                             <DialogTitle className="text-2xl">{quiz.title}</DialogTitle>
-                            <DialogClose className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
-                              <X className="w-4 h-4" />
-                            </DialogClose>
+                            
                           </div>
                         </DialogHeader>
                         <div className="mt-6">
                           <div className="flex gap-4 mb-6">
                             <Badge variant="outline" className="px-3 py-1">
-                              Type: {quiz.type}
+                              Type: {quiz.type.join(', ')}
                             </Badge>
                             <Badge variant="outline" className="px-3 py-1">
                               Level: {quiz.level}
@@ -146,7 +144,7 @@ export default function Quizzes() {
                           </div>
                           <div className="space-y-6">
                             {quiz.questions.map((q, index) => (
-                              <div key={index} className="bg-slate-900 p-4 rounded-lg text-white"> {/* Updated background color */}
+                              <div key={index} className="bg-slate-900 p-4 rounded-lg text-white">
                                 <h4 className="font-medium mb-3 text-lg">{`Question ${index + 1}: ${q.question}`}</h4>
                                 {'options' in q ? (
                                   <div className="space-y-2 ml-4">
@@ -155,19 +153,18 @@ export default function Quizzes() {
                                         <span className="w-6 h-6 rounded-full bg-white border flex items-center justify-center text-sm text-black">
                                           {String.fromCharCode(65 + optIndex)}
                                         </span>
-                                        <span className="text-lg">{option}</span> {/* Updated text size */}
+                                        <span className="text-lg">{option}</span>
                                       </div>
                                     ))}
                                   </div>
                                 ) : (
-                                  <div className="ml-4 text-slate-300"> {/* Lighter text for fill-in-the-blank answers */}
+                                  <div className="ml-4 text-slate-300">
                                     Fill in the blank answer: <span className="font-semibold">{q.answer}</span>
                                   </div>
                                 )}
                               </div>
                             ))}
                           </div>
-
                         </div>
                       </DialogContent>
                     </Dialog>

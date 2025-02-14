@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import DashboardNav from '@/components/dashboard-nav';
+import { Sidebar } from '@/components/dashboard/sidebar';
 
 export default function AdminProfile() {
   const initialState = {
@@ -64,7 +65,7 @@ export default function AdminProfile() {
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex">
       {/* Sidebar - Fixed position */}
       <div className="w-64 h-full bg-white shadow-md fixed top-0 left-0">
-        <DashboardNav />
+        <Sidebar />
       </div>
 
       {/* Main Content Area - Scrollable */}
