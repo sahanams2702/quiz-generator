@@ -14,10 +14,20 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        const { userId, topic, difficultyLevel, numberOfQuestions, typeOfQuestions } = await req.json();
+        const body = await req.json();
+        
+        if (!body || Object.keys(body).length === 0) {
+            return NextResponse.json({ error: "Empty request body" }, { status: 400 });
+        }
 
+        const { userId, topic, difficultyLevel, numberOfQuestions, typeOfQuestions } = body;
+        
         if (!userId || !topic || !difficultyLevel || !numberOfQuestions || !typeOfQuestions) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
+
+        if (!Array.isArray(typeOfQuestions)) {
+            return NextResponse.json({ error: "typeOfQuestions must be an array" }, { status: 400 });
         }
 
         //const generatedQuestions = await generateQuizQuestions({ topic, difficulty_level, number_of_questions, type_of_questions });
