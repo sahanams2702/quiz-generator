@@ -19,24 +19,24 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const emailRegex = /^(?!.*@.*@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[*.!@#$%^&(){}[\]:;<>,.?/~_+\-=|\\]).{8,32}$/;
+  // const emailRegex = /^(?!.*@.*@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[*.!@#$%^&(){}[\]:;<>,.?/~_+\-=|\\]).{8,32}$/;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     // Validate email format
-    if (!emailRegex.test(email)) {
-      setError('Invalid email format. Please follow the correct format (example@domain.com).');
-      setIsLoading(false);
-      return;
-    }
-    // Validate password format
-    if (!passwordRegex.test(password)) {
-      setError('Password must be 8-32 characters long and include 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character.');
-      setIsLoading(false);
-      return;
-    }
+    // if (!emailRegex.test(email)) {
+    //   setError('Invalid email format. Please follow the correct format (example@domain.com).');
+    //   setIsLoading(false);
+    //   return;
+    // }
+    // // Validate password format
+    // if (!passwordRegex.test(password)) {
+    //   setError('Password must be 8-32 characters long and include 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character.');
+    //   setIsLoading(false);
+    //   return;
+    // }
     // Check if the user is admin
     if (email === 'admin222@quizez.com' && password === 'Admin@123') {
       setIsLoading(false);
@@ -54,33 +54,31 @@ export default function SignIn() {
       swal.fire({
         title: "<strong>Oops! You haven’t registered yet.</strong>",
         icon: "info",
-        html: `<div class="text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text">
-            Please register with us.</div>`,
-        showCloseButton: true,
-        showCancelButton: true,
-        focusConfirm: false,
-        confirmButtonText: `<i class="fa fa-thumbs-up" style="color: white;"></i> OK `,
-        confirmButtonAriaLabel: "Thumbs up, great!",
-        cancelButtonText: `<i class="fa fa-thumbs-down" style="color: white;"></i>`,
-        cancelButtonAriaLabel: "Thumbs down",
+        html: `
+<div class="text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text">
+            Please register with us.
+</div>
+        `,
+        showCloseButton: false,
+        showConfirmButton: false,
+        showCancelButton: false,
+        timer: 1500,
+        timerProgressBar: true,
         customClass: {
           popup: '!bg-black !text-white',
           title: 'text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text',
-          closeButton: '!text-white',
-          actions: '!text-white'
+          timerProgressBar: 'bg-purple-500',
         },
-        buttonsStyling: false,
         background: '#000',
-        confirmButtonColor: 'transparent',
-        cancelButtonColor: 'transparent'
       });
     }
     // Check password
-    if (storedUserData.password !== password) {
+    if (!storedUserData || storedUserData.password !== password) {
       setError('Incorrect password.');
       setIsLoading(false);
       return;
     }
+    
     // Successful login
     setIsLoading(false);
     toast({
