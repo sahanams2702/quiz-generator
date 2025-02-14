@@ -7,7 +7,7 @@ export async function POST(req) {
 
         for (let question of questions) {
             if (question.type === "MCQ") {
-                await prisma.mcq_table.create({
+                await prisma.mcq_table.create({ 
                     data: { quiz_id: quizId, question_text: question.text, option1: question.options[0], option2: question.options[1], option3: question.options[2], option4: question.options[3], correct_answer: question.correct }
                 });
             } else if (question.type === "MSQ") {

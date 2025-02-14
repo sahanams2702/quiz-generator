@@ -91,7 +91,14 @@ export default function About() {
   );
 }
 
-function FeatureCard({ icon: Icon, title, description, image }) {
+interface FeatureCardProps {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  title: string;
+  description: string;
+  image?: string;
+}
+
+function FeatureCard({ icon: Icon, title, description, image }: FeatureCardProps) {
   return (
     <div className="p-6 rounded-lg border bg-background hover:shadow-lg transition-shadow">
       <Icon className="h-10 w-10 text-primary mb-4" />
@@ -108,7 +115,7 @@ function FeatureCard({ icon: Icon, title, description, image }) {
   );
 }
 
-function StatCard({ number, label }) {
+function StatCard({ number, label }: { number: string; label: string }) {
   return (
     <div className="text-center p-6 rounded-lg border bg-background">
       <div className="text-3xl font-bold text-primary mb-2">{number}</div>
