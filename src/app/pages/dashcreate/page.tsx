@@ -34,9 +34,8 @@ export default function CreateQuiz() {
         <div>
           <Label htmlFor="level">Level</Label>
           <Select
-            id="level"
             value={level}
-            onChange={(e) => setLevel(e.target.value)}
+            onValueChange={(value: string) => setLevel(value)}
             required
           >
             <option value="">Select Level</option>
@@ -59,9 +58,8 @@ export default function CreateQuiz() {
         <div>
           <Label htmlFor="questionType">Question Type</Label>
           <Select
-            id="questionType"
             value={questionType}
-            onChange={(e) => setQuestionType(e.target.value)}
+            onValueChange={(value: string) => setQuestionType(value)}
             required
           >
             <option value="">Select Question Type</option>

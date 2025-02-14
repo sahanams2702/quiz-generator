@@ -1,6 +1,7 @@
 // pages/dashboard/history.tsx
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, Award, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function History() {
   return (
