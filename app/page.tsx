@@ -18,7 +18,7 @@ export default function Home() {
                 </h2>
 
                 <p className="text-lg text-muted-foreground mt-2 animate-shimmer">
-                  Take a quiz now and see how well you know the topics!........
+                  Take a quiz now and see how well you know the topics!
                 </p>
                 <div className="relative animate-float">
                   <img

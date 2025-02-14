@@ -2,19 +2,96 @@
 
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Sidebar } from '@/components/dashboard/sidebar';
-import { Plus } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
 
 const quizzes = [
-  { id: 1, title: 'JavaScript Fundamentals', participants: 45, avgScore: '78%', createdAt: '2024-03-15' },
-  { id: 2, title: 'React Hooks Deep Dive', participants: 32, avgScore: '82%', createdAt: '2024-03-14' },
-  { id: 3, title: 'TypeScript Basics', participants: 28, avgScore: '75%', createdAt: '2024-03-13' },
-  { id: 4, title: 'Next.js Masterclass', participants: 38, avgScore: '80%', createdAt: '2024-03-12' },
-  { id: 5, title: 'CSS Grid & Flexbox', participants: 55, avgScore: '85%', createdAt: '2024-03-11' },
-  { id: 6, title: 'Node.js Essentials', participants: 42, avgScore: '77%', createdAt: '2024-03-10' },
-  { id: 7, title: 'GraphQL Fundamentals', participants: 25, avgScore: '73%', createdAt: '2024-03-09' },
-  { id: 8, title: 'Vue.js Basics', participants: 30, avgScore: '79%', createdAt: '2024-03-08' },
+  {
+    id: 1,
+    title: 'JavaScript Fundamentals',
+    Users: 45,
+    nameOfUser: 'John Doe',
+    type: 'MCQ',
+    level: 'Intermediate',
+    questions: [
+      {
+        question: 'What is closure in JavaScript?',
+        options: [
+          'A function that has access to variables in its outer scope',
+          'A way to close browser window',
+          'A method to end a loop',
+          'A type of variable declaration'
+        ],
+        correctAnswer: 0
+      },
+      {
+        question: 'Which of these is not a JavaScript data type?',
+        options: [
+          'String',
+          'Boolean',
+          'Float',
+          'Number'
+        ],
+        correctAnswer: 2
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'React Hooks Deep Dive',
+    Users: 32,
+    nameOfUser: 'John',
+    type: 'MSQ',
+    level: 'Advanced',
+    questions: [
+      {
+        question: 'Which hooks can be used for performance optimization?',
+        options: [
+          'useMemo',
+          'useCallback',
+          'useEffect',
+          'useRef'
+        ],
+        correctAnswers: [0, 1]
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: 'TypeScript Basics',
+    Users: 28,
+    nameOfUser: 'sana',
+    type: 'FIB',
+    level: 'Easy',
+    questions: [
+      {
+        question: 'What is the type annotation for arrays in TypeScript?',
+        answer: 'type[]'
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: 'Next.js Masterclass',
+    Users: 38,
+    nameOfUser: 'paddu',
+    type: 'MCQ',
+    level: 'Advanced',
+    questions: [
+      {
+        question: 'What is the purpose of getStaticProps?',
+        options: [
+          'To fetch data at build time',
+          'To fetch data on every request',
+          'To fetch data on client side',
+          'To fetch data periodically'
+        ],
+        correctAnswer: 0
+      }
+    ]
+  }
 ];
 
 export default function Quizzes() {
@@ -27,7 +104,6 @@ export default function Quizzes() {
         <header className="flex h-16 items-center justify-between border-b px-6">
           <h1 className="text-2xl font-semibold">Quizzes</h1>
           <div className="flex items-center gap-4">
-            {/* <ThemeToggle /> */}
           </div>
         </header>
         <main className="p-6">
@@ -38,19 +114,63 @@ export default function Quizzes() {
                   <div>
                     <h3 className="text-lg font-medium">{quiz.title}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Created on {new Date(quiz.createdAt).toLocaleDateString()}
+                      {quiz.nameOfUser}
                     </p>
                   </div>
                   <div className="flex items-center gap-8">
                     <div className="text-center">
-                      <p className="text-2xl font-bold">{quiz.participants}</p>
-                      <p className="text-sm text-muted-foreground">Participants</p>
+                      <p className="text-2xl font-bold">{quiz.Users}</p>
+                      <p className="text-sm text-muted-foreground">Users</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold">{quiz.avgScore}</p>
-                      <p className="text-sm text-muted-foreground">Avg. Score</p>
-                    </div>
-                    <Button variant="outline">View Details</Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">View Details</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                        <DialogHeader>
+                          <div className="flex items-center justify-between">
+                            <DialogTitle className="text-2xl">{quiz.title}</DialogTitle>
+                            <DialogClose className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
+                              <X className="w-4 h-4" />
+                            </DialogClose>
+                          </div>
+                        </DialogHeader>
+                        <div className="mt-6">
+                          <div className="flex gap-4 mb-6">
+                            <Badge variant="outline" className="px-3 py-1">
+                              Type: {quiz.type}
+                            </Badge>
+                            <Badge variant="outline" className="px-3 py-1">
+                              Level: {quiz.level}
+                            </Badge>
+                          </div>
+                          <div className="space-y-6">
+                            {quiz.questions.map((q, index) => (
+                              <div key={index} className="bg-slate-900 p-4 rounded-lg text-white"> {/* Updated background color */}
+                                <h4 className="font-medium mb-3 text-lg">{`Question ${index + 1}: ${q.question}`}</h4>
+                                {'options' in q ? (
+                                  <div className="space-y-2 ml-4">
+                                    {q.options.map((option, optIndex) => (
+                                      <div key={optIndex} className="flex items-center gap-2">
+                                        <span className="w-6 h-6 rounded-full bg-white border flex items-center justify-center text-sm text-black">
+                                          {String.fromCharCode(65 + optIndex)}
+                                        </span>
+                                        <span className="text-lg">{option}</span> {/* Updated text size */}
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="ml-4 text-slate-300"> {/* Lighter text for fill-in-the-blank answers */}
+                                    Fill in the blank answer: <span className="font-semibold">{q.answer}</span>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               </Card>

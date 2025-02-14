@@ -14,10 +14,10 @@ const data = [
 ];
 
 const recentQuizzes = [
-  { name: 'JavaScript Fundamentals', participants: 45, avgScore: '78%' },
-  { name: 'React Hooks Deep Dive', participants: 32, avgScore: '82%' },
-  { name: 'TypeScript Basics', participants: 28, avgScore: '75%' },
-  { name: 'Next.js Masterclass', participants: 38, avgScore: '80%' },
+  { name: 'JavaScript Fundamentals', noOfQuestions: 45, avgScore: '78%', username: 'John Doe' },
+  { name: 'React Hooks Deep Dive', noOfQuestions: 32, avgScore: '82%', username: 'Jane Doe' },
+  { name: 'TypeScript Basics', noOfQuestions: 28, avgScore: '75%', username: 'John Doe' },
+  { name: 'Next.js Masterclass', noOfQuestions: 38, avgScore: '80%', username: 'Jane Doe' },
 ];
 
 const CustomXAxis = ({ tick = true, ...props }) => <XAxis tick={tick} {...props} />;
@@ -45,8 +45,8 @@ export default function Home() {
               <p className="mt-2 text-3xl font-bold">827</p>
             </Card>
             <Card className="p-6">
-              <h3 className="text-sm font-medium text-muted-foreground">Completion Rate</h3>
-              <p className="mt-2 text-3xl font-bold">78%</p>
+              <h3 className="text-sm font-medium text-muted-foreground">User Sign UP (This Week)</h3>
+              <p className="mt-2 text-3xl font-bold">15</p>
             </Card>
           </div>
 
@@ -88,12 +88,12 @@ export default function Home() {
                     <div>
                       <p className="font-medium">{quiz.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {quiz.participants} participants
+                        {quiz.username}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold">{quiz.avgScore}</p>
-                      <p className="text-sm text-muted-foreground">Avg. Score</p>
+                      <p className="text-lg font-bold">{quiz.noOfQuestions}</p>
+                      <p className="text-sm text-muted-foreground">No. of Questions</p>
                     </div>
                   </div>
                 ))}

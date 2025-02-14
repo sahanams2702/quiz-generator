@@ -20,7 +20,7 @@ export default function About() {
 </h1>
 
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            "we’re revolutionizing learning with AI-powered quizzes that enhances your progress, making education more engaging and personalized. Our mission is to empower learners through dynamic, real-time feedback and tailored challenges for every subject".
+            "We’re revolutionizing learning with AI-powered quizzes that enhances your progress, making education more engaging and personalized. Our mission is to empower learners through dynamic, real-time feedback and tailored challenges for every subject".
             </p>
           </div>
           <div className="md:w-1/2 mt-8 md:mt-0">
