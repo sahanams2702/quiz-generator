@@ -206,8 +206,6 @@ export default function ForgotPassword() {
           </div>
         </div>
       </div>
-
-      {/* Footer section */}
       <Footer />
     </div>
   );

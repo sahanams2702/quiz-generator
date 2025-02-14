@@ -54,21 +54,14 @@ export default function SignIn() {
       swal.fire({
         title: "<strong>Oops! You haven’t registered yet.</strong>",
         icon: "info",
-        html: `
-<div class="text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text">
-            Please register with us.
-</div>
-        `,
+        html: `<div class="text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text">
+            Please register with us.</div>`,
         showCloseButton: true,
         showCancelButton: true,
         focusConfirm: false,
-        confirmButtonText: `
-<i class="fa fa-thumbs-up" style="color: white;"></i> OK
-        `,
+        confirmButtonText: `<i class="fa fa-thumbs-up" style="color: white;"></i> OK `,
         confirmButtonAriaLabel: "Thumbs up, great!",
-        cancelButtonText: `
-<i class="fa fa-thumbs-down" style="color: white;"></i>
-        `,
+        cancelButtonText: `<i class="fa fa-thumbs-down" style="color: white;"></i>`,
         cancelButtonAriaLabel: "Thumbs down",
         customClass: {
           popup: '!bg-black !text-white',
@@ -171,8 +164,6 @@ export default function SignIn() {
           </div>
         </div>
       </div>
-
-      {/* Footer section, if needed */}
       <Footer />
     </div>
   );

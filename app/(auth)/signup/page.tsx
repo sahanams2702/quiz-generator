@@ -102,9 +102,7 @@ export default function SignUp() {
                   <Brain className="h-8 w-8 text-primary" />
                 </div>
                 <CardTitle className="text-2xl text-center bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-transparent bg-clip-text">
-  Create an account
-</CardTitle>
-
+                Create an account</CardTitle>
                 <CardDescription className="text-center">
                   Enter your details to create your account
                 </CardDescription>
@@ -154,13 +152,10 @@ export default function SignUp() {
                   {error && (
                     <div className="text-sm text-red-500 text-center">{error}</div>
                   )}
-                  <Button 
-  className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-opacity-50" 
-  type="submit" 
-  disabled={isLoading}
->
-  {isLoading ? 'Creating account...' : 'Create Account'}
-</Button>
+                  <Button className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-opacity-50" 
+                  type="submit" 
+                  disabled={isLoading}>{isLoading ? 'Creating account...' : 'Create Account'}
+                  </Button>
 
                 </form>
                 <div className="flex justify-center mt-4">
@@ -190,8 +185,6 @@ export default function SignUp() {
           </div>
         </div>
       </div>
-
-      {/* Footer section */}
       <Footer />
     </div>
   );

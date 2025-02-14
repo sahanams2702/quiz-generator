@@ -160,8 +160,7 @@ const Dashboard = () => {
                   <span className="font-bold text-gray-800 dark:text-gray-200 mb-0">{quiz.topic}</span>
                   <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-600">
                     <div className="flex items-center">
-                      {/* <Users className="w-4 h-4 mr-1" />
-                      <span>{quiz.participants} participants</span> */}
+                   
                     </div>
                     <div className="flex items-center text-blue-600 dark:text-blue-400">
                       <LayoutList className="w-4 h-4 mr-1" />

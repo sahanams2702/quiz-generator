@@ -15,9 +15,8 @@ export default function About() {
       <section className="py-2 px-4">
         <div className="container mx-auto text-center md:flex items-center justify-between">
           <div className="md:w-1/2">
-          <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">
-  About QuizEZ
-</h1>
+          <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">About QuizEZ
+          </h1>
 
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             "We’re revolutionizing learning with AI-powered quizzes that enhances your progress, making education more engaging and personalized. Our mission is to empower learners through dynamic, real-time feedback and tailored challenges for every subject".
@@ -70,26 +69,6 @@ export default function About() {
           </div>
         </div>
       </section>
-
-      {/* Team Section */}
-      {/* <section className="py-16 bg-card">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Mission</h2>
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <Award className="h-12 w-12 mx-auto text-primary mb-4" />
-            <p className="text-lg text-muted-foreground">
-              At QuizEZ, Our mission is to create a smarter, more personalized learning experience using AI technology. We empower learners with dynamic quizzes that adapt to their progress, offering real-time feedback and tailored recommendations, making learning accessible, engaging, and effective for all.
-            </p>
-            <div>
-              <img 
-                src="/assets/images/ab4.webp" 
-                alt="Our Team"
-                className="rounded-lg shadow-lg w-full h-auto"
-              />
-            </div>
-          </div>
-        </div>
-      </section> */}
       <Footer/>
     </div>
   );

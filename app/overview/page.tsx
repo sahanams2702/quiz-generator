@@ -6,11 +6,11 @@ import { Sidebar } from '@/components/dashboard/sidebar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
-  { name: 'Jan', participants: 150 },
-  { name: 'Feb', participants: 180 },
-  { name: 'Mar', participants: 220 },
-  { name: 'Apr', participants: 250 },
-  { name: 'May', participants: 280 },
+  { name: 'Jan', Users: 150 },
+  { name: 'Feb', Users: 180 },
+  { name: 'Mar', Users: 220 },
+  { name: 'Apr', Users: 250 },
+  { name: 'May', Users: 280 },
 ];
 
 const recentQuizzes = [
@@ -68,7 +68,7 @@ export default function Home() {
                   />
                   <Line 
                     type="monotone" 
-                    dataKey="participants" 
+                    dataKey="Users" 
                     stroke="hsl(var(--chart-2))" 
                     strokeWidth={2} 
                   />

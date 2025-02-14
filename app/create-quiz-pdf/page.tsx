@@ -92,23 +92,7 @@ function createquizpdf() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* URL Field */}
-              {/* <div>
-                <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                  <BookOpen className="w-4 h-4 mr-2 text-blue-600" />
-                  URL
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.url}
-                  onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                  placeholder="e.g., https://example.com"
-                />
-              </div> */}
-
-              {/* File Upload Field */}
+             
               <div>
                 <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
                   <Upload className="w-4 h-4 mr-2 text-blue-600" />
