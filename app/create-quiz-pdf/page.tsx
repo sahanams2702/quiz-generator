@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import React, { useState } from "react";
 import { useFormik } from "formik";
@@ -8,6 +8,8 @@ import { generatePDFAPI } from "@/services/generatepdfservice";
 import { Upload, Download, X } from "lucide-react";
 import DashboardNav from "@/components/dashboard-nav";
 import { jsPDF } from "jspdf";
+import Swal from "sweetalert2";  // Import SweetAlert2
+
 GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
@@ -87,13 +89,6 @@ function CreateQuizPDF() {
 
         const allQuestions = [
           ...(response.questions.MCQ || []).map((q) => {
-            console.log("MCQ Question:", q.question);
-            console.log(
-              "Answer Type:",
-              typeof q.correctAnswer,
-              "Value:",
-              q.correctAnswer
-            );
             return {
               question: q.question,
               options: q.options || [],
@@ -103,23 +98,15 @@ function CreateQuizPDF() {
           }),
 
           ...(response.questions.MSQ || []).map((q) => {
-            console.log("MSQ Raw Data:", q);
             return {
               question: q.question,
               options: q.options || [],
-              answer: Array.isArray(q.correctAnswers) ? q.correctAnswers : [], // Ensure it's an array
+              answer: Array.isArray(q.correctAnswers) ? q.correctAnswers : [],
               type: "multiple-selection",
             };
           }),
 
           ...(response.questions.FIB || []).map((q) => {
-            console.log("FIB Question:", q.question);
-            console.log(
-              "Answer Type:",
-              typeof q.correctAnswer,
-              "Value:",
-              q.correctAnswer
-            );
             return {
               question: q.question,
               answer: q.correctAnswer || q.answer || "",
@@ -129,7 +116,21 @@ function CreateQuizPDF() {
         ];
 
         setGeneratedQuestions(allQuestions);
-        setShowPopover(true);
+
+        Swal.fire({
+          title: "Quiz Generated!",
+          text: "Your quiz has been generated successfully. Click continue to view the quiz.",
+          icon: "success",
+          confirmButtonText: "Continue",
+          confirmButtonColor: '#2d3748', // Dark background color (gray-800)
+          customClass: {
+            confirmButton: 'bg-gray-800 text-white hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+          }
+        }).then(() => {
+          setShowPopover(true); // Show popover when the user clicks Continue
+        });
+        
+
         createGoogleForm(allQuestions);
       } catch (error) {
         console.error("Error processing PDF:", error);
@@ -143,7 +144,7 @@ function CreateQuizPDF() {
     if (!questions.length) return;
 
     const apiUrl =
-      "https://script.google.com/macros/s/AKfycbzjUouIv_H3wubcvCCO5yWL5qGh6hLgrV6tJ0vDvD8/dev" 
+      "https://script.google.com/macros/s/AKfycbzjUouIv_H3wubcvCCO5yWL5qGh6hLgrV6tJ0vDvD8/dev";
     const quizData = {
       title: "AI-Generated Quiz",
       questions: questions.map((q) => ({
@@ -163,7 +164,7 @@ function CreateQuizPDF() {
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        mode:"cors",
+        mode: "cors",
         body: JSON.stringify(quizData),
       });
       const data = await response.json();
@@ -201,7 +202,7 @@ function CreateQuizPDF() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex">
       <div className="fixed">
         <DashboardNav />
       </div>
@@ -239,7 +240,7 @@ function CreateQuizPDF() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700"
+                className="w-full bg-purple-800 text-white py-3 px-6 rounded-lg hover:bg-pink-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Generating..." : "Create Quiz"}
               </button>
@@ -261,12 +262,6 @@ function CreateQuizPDF() {
                   className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
                 >
                   <Download className="w-5 h-5 mr-2" /> Download Quiz
-                </button>
-                <button
-                  onClick={() => createGoogleForm(generatedQuestions)}
-                  className="mt-4 w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700"
-                >
-                  Create Google Form
                 </button>
 
                 <button
