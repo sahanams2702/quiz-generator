@@ -8,6 +8,9 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+// Import functions from actions.js
+import { sendOtp, verifyOtp, updatePassword } from './action';
+
 export default function ForgotPassword() {
   const router = useRouter();
   const { toast } = useToast();
@@ -17,7 +20,7 @@ export default function ForgotPassword() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [step, setStep] = useState(1); // Step control: 1 = email, 2 = OTP, 3 = new password
+  const [step, setStep] = useState(1);
 
   const emailRegex = /^(?!.*@.*@)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[*.!@#$%^&(){}[\]:;<>,.?/~_+\-=|\\]).{8,32}$/;
@@ -26,51 +29,44 @@ export default function ForgotPassword() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Validate email format
     if (!emailRegex.test(email)) {
       setError('Invalid email format. Please follow the correct format (example@domain.com).');
       setIsLoading(false);
       return;
     }
 
-    // Simulate OTP generation
-    const storedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
-    if (!storedUserData || storedUserData.email !== email) {
-      setError('No account found with this email.');
+    try {
+      await sendOtp(email); // Call the sendOtp function from actions.js
       setIsLoading(false);
-      return;
+      setStep(2); // Move to OTP verification step
+      toast({
+        title: 'OTP Sent',
+        description: 'An OTP has been sent to your email for verification.',
+      });
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
     }
-
-    // Move to OTP verification step
-    setIsLoading(false);
-    setStep(2);
-    toast({
-      title: 'OTP Sent',
-      description: 'An OTP has been sent to your email for verification.',
-    });
   };
 
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate OTP verification (in a real app, you would validate the OTP against a server)
-    if (otp !== '123456') {
-      setError('Invalid OTP. Please try again.');
+    try {
+      await verifyOtp(email, otp); // Call the verifyOtp function from actions.js
       setIsLoading(false);
-      return;
+      setStep(3); // Move to password change step
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
     }
-
-    // Move to password change step
-    setIsLoading(false);
-    setStep(3);
   };
 
   const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Validate new password
     if (!passwordRegex.test(newPassword)) {
       setError('Password must be 8-32 characters long and include 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character.');
       setIsLoading(false);
@@ -83,31 +79,25 @@ export default function ForgotPassword() {
       return;
     }
 
-    // Simulate password update
-    const storedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
-    if (storedUserData) {
-      storedUserData.password = newPassword;
-      localStorage.setItem('userData', JSON.stringify(storedUserData));
+    try {
+      await updatePassword(email, newPassword); // Call the updatePassword function from actions.js
+      setIsLoading(false);
+      toast({
+        title: 'Password Updated',
+        description: 'Your password has been successfully updated.',
+      });
+      router.push('/signin'); // Redirect to sign-in page
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
-    toast({
-      title: 'Password Updated',
-      description: 'Your password has been successfully updated.',
-    });
-
-    router.push('/signin'); // Redirect to sign-in page after successful update
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header Section */}
       <Header />
-
-      {/* Main Content */}
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex w-full max-w-5xl mx-auto">
-          {/* Right side - Form */}
           <div className="flex-1 flex items-center justify-center">
             <Card className="w-full max-w-[400px] p-4">
               <CardHeader className="space-y-1">
@@ -206,8 +196,6 @@ export default function ForgotPassword() {
           </div>
         </div>
       </div>
-
-      {/* Footer section */}
       <Footer />
     </div>
   );
