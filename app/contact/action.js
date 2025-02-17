@@ -18,4 +18,9 @@ export async function submitContactForm(name, email, message) {
       throw error;
     }
   }
+<<<<<<< HEAD
   
+=======
+  
+  
+>>>>>>> 31fb915a5c5646fdbd83be355d01cde53af941a8
