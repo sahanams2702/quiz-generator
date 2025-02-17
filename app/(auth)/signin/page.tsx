@@ -3,7 +3,7 @@ import { useState } from 'react';
 import swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Brain } from 'lucide-react';
+import { AlertTriangle, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -44,7 +44,7 @@ export default function SignIn() {
         title: 'Admin Login Successful',
         description: 'Welcome to the Admin Dashboard',
       });
-      router.push('/quizzes'); // Redirect to Admin Dashboard
+      router.push('/overview'); // Redirect to Admin Dashboard
       return;
     }
     // Check if user exists in localStorage
@@ -83,7 +83,28 @@ export default function SignIn() {
     setIsLoading(false);
     toast({
       title: 'Success',
-      description: 'Signed in successfully',
+      description: 'welcome to user dashboard',
+    });
+   
+    swal.fire({
+      title: "<strong>You have signed successfully</strong>",
+      icon: "info",
+      html: `
+<div class="text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text">
+          Please register with us.
+</div>
+      `,
+      showCloseButton: false,
+      showConfirmButton: false,
+      showCancelButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      customClass: {
+        popup: '!bg-black !text-white',
+        title: 'text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text',
+        timerProgressBar: 'bg-purple-500',
+      },
+      background: '#000',
     });
     router.push('/dashboard'); // Redirect to User Dashboard
   };

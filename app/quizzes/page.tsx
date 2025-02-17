@@ -97,7 +97,7 @@ export default function Quizzes() {
         <Sidebar />
       </div>
       <div className="flex-1 overflow-auto">
-        <header className="flex h-16 items-center justify-between border-b px-6">
+        <header className="flex h-16 items-center justify-between px-6">
           <h1 className="text-2xl font-semibold">Quizzes</h1>
           <div className="flex items-center gap-4">
           </div>

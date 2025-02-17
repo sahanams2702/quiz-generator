@@ -17,16 +17,16 @@ export default function Footer() {
 </p>
 
             <div className="flex space-x-3">
-              <Link href="#" className="text-muted-foreground hover:text-primary">
+              <Link href="https://www.facebook.com/itcinfotech/" className="text-muted-foreground hover:text-primary">
                 <Facebook className="h-4 w-4" />
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary">
+              <Link href="https://x.com/itcinfotech/status/1730541842201247991" className="text-muted-foreground hover:text-primary">
                 <Twitter className="h-4 w-4" />
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary">
+              <Link href="https://www.instagram.com/explore/locations/1767012230262634/itc-infotech/" className="text-muted-foreground hover:text-primary">
                 <Instagram className="h-4 w-4" />
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary">
+              <Link href="https://in.linkedin.com/company/itc-infotech" className="text-muted-foreground hover:text-primary">
                 <Linkedin className="h-4 w-4" />
               </Link>
             </div>
@@ -54,13 +54,13 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 94861 13650</span>
               </li>
             </ul>
           </div>
         </div>
         <div className="mt-6 pt-4 border-t text-center text-xs text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} QuizGenius. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} QuizEZ. All rights reserved.</p>
         </div>
       </div>
     </footer>

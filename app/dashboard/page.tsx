@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import DashboardNav from '@/components/dashboard-nav';
 
-function App() {
+function Dashboard() {
   const [topic, setTopic] = useState('');
   const [showPopover, setShowPopover] = useState(false);
   const [questions, setQuestions] = useState<Array<{ question: string; options: string[]; answer: string }>>([]);
@@ -77,11 +77,11 @@ Correct Answer: ${q.answer}
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex">
-      <div className="w-64 bg-white dark:bg-black border-r border-gray-100 dark:border-gray-700 fixed">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex">
+      <div className=" fixed">
         <DashboardNav />
       </div>
-      <div className="p-6 ml-[20%] w-full bg-gradient-to-br px-8 py-12 from-purple-500 via-pink-500 to-orange-500">
+      <div className="p-6 ml-[20%] w-full bg-gradient-to-br px-8 py-12 from-purple-500 via-pink-500 to-orange-500 ">
         <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Dashboard</h1>
 
         {/* Stats Cards */}
@@ -96,7 +96,7 @@ Correct Answer: ${q.answer}
 
           <div className="relative bg-white dark:bg-black rounded-xl p-6 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Topics Covered</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Total no.of Questions Generated</h3>
               <BookOpen className="w-6 h-6 dark:text-white" />
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">5</p>
@@ -147,26 +147,46 @@ Correct Answer: ${q.answer}
           </div>
 
           {/* User History */}
-          <div className="relative bg-white dark:bg-black rounded-xl p-6 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recent Quizzes</h2>
-              <History className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-            </div>
-            <div className="space-y-4">
-              {quizHistory.map((quiz, index) => (
-                <div key={index} className="border-b border-gray-100 dark:border-gray-700 pb-4 last:border-0">
-                  <span className="font-bold text-gray-800 dark:text-gray-200 mb-0">{quiz.topic}</span>
-                  <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-600">
-                    <div className="flex items-center text-blue-600 dark:text-blue-400">
-                      <LayoutList className="w-4 h-4 mr-1" />
-                      <span>Number of questions: {quiz.numbers}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+{/* <div className="relative bg-white dark:bg-black rounded-xl p-6 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
+  <div className="flex items-center justify-between mb-6">
+    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recent Quizzes</h2>
+    <History className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+  </div>
+  <div className="space-y-4">
+    {quizHistory.length === 0 ? (
+      <div className="text-center text-gray-600 dark:text-gray-400">
+        <span role="img" aria-label="sad" className="text-3xl">😞</span>
+        <p>No Recent Quizzes</p>
+      </div>
+    ) : (
+      quizHistory.map((quiz, index) => (
+        <div key={index} className="border-b border-gray-100 dark:border-gray-700 pb-4 last:border-0">
+          <span className="font-bold text-gray-800 dark:text-gray-200 mb-0">{quiz.topic}</span>
+          <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-600">
+            <div className="flex items-center text-blue-600 dark:text-blue-400">
+              <LayoutList className="w-4 h-4 mr-1" />
+              <span>Number of questions: {quiz.numbers}</span>
             </div>
           </div>
         </div>
+      ))
+    )}
+  </div>
+</div>
+</div>  */}
+{/* User History */}
+<div className="relative bg-white dark:bg-black rounded-xl p-6 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
+  <div className="flex items-center justify-between mb-6">
+    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recent Quizzes</h2>
+    <History className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+  </div>
+  <div className="text-center text-gray-600 dark:text-gray-400">
+    <span role="img" aria-label="sad" className="text-3xl">😞</span>
+    <p>No Recent Quizzes</p>
+  </div>
+</div>
+</div>
+
 
         {/* Questions Popup */}
         {showPopover && (
@@ -227,4 +247,4 @@ Correct Answer: ${q.answer}
   );
 }
 
-export default App;
+export default Dashboard;

@@ -74,16 +74,16 @@ function createquizpdf() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex">
       {/* Fixed Dashboard Navbar */}
       <div className="fixed">
         <DashboardNav />
       </div>
 
       {/* Content Section (quiz form) */}
-      <div className="bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex-1 ml-[10%] px-8 py-12 flex justify-center items-center">
+      <div className="flex-1 ml-[10%] px-8 py-12 flex justify-center items-center ">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8 w-[600px]">
+        <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8 w-full ml-[10%] sm:w-[300px] md:w-[500px] lg:w-[600px]">
             <div className="flex justify-between items-center mb-4">
               <div className="text-center">
                 <h1 className="text-3xl font-bold justify-center mb-4 text-black">Create New Quiz</h1>
@@ -109,7 +109,7 @@ function createquizpdf() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-pink-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Generating...' : 'Create Quiz'}
               </button>
@@ -118,54 +118,54 @@ function createquizpdf() {
         </div>
       </div>
 
-      {/* Modal for Generated Quiz */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Generated Quiz</h2>
-                </div>
-                <div className="flex gap-4">
-                  <button
-                    onClick={handleDownload}
-                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
-                  </button>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                {generatedQuestions.map((question) => (
-                  <div key={question.id} className="border-b pb-4">
-                    <p className="font-medium mb-2 text-gray-900">
-                      {question.id}. {question.question}
-                    </p>
-                    {question.options && (
-                      <ul className="list-none pl-6 space-y-1">
-                        {question.options.map((option, index) => (
-                          <li key={index} className="text-gray-800">
-                            {option}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto scrollbar-hidden">
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Generated Quiz</h2>
+          </div>
+          <div className="flex gap-4">
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <Download className="w-4 h-4" />
+              Download
+            </button>
+            <button
+              onClick={() => setShowModal(false)}
+              className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+            >
+              <X className="w-6 h-6" />
+            </button>
           </div>
         </div>
-      )}
+
+        <div className="space-y-6">
+          {generatedQuestions.map((question) => (
+            <div key={question.id} className="border-b pb-4">
+              <p className="font-medium mb-2 text-gray-900">
+                {question.id}. {question.question}
+              </p>
+              {question.options && (
+                <ul className="list-none pl-6 space-y-1">
+                  {question.options.map((option, index) => (
+                    <li key={index} className="text-gray-800">
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

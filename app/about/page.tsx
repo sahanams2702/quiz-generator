@@ -64,8 +64,8 @@ export default function About() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <StatCard number="10+" label="Number of Users" />
             <StatCard number="50+" label="Number of Quizzes generated" />
-            <StatCard number="9" label="Active users" />
-            <StatCard number="10+" label="Topics Covered" />
+            <StatCard number="150+" label="Number of questions generated" />
+            <StatCard number="3" label="Types of Questions(MCQ,MSQ,FIB)" />
           </div>
         </div>
       </section>

@@ -8,12 +8,13 @@ const Header = () => {
   return (
     <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 py-5">
       <div className="container mx-auto flex h-16 items-center justify-between px-3">
-        <div className="flex items-center space-x-2">
-          <Brain className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
-            QuizEZ
-          </span>
-        </div>
+      <div className="flex items-center space-x-2">
+  <Brain className="h-6 w-6 text-primary" />
+  <a href="/" className="font-bold text-3xl bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
+    QuizEZ
+  </a>
+</div>
+
 
         <nav className="hidden md:flex items-center space-x-6 text-lg">
           {/* Use Link for client-side routing */}

@@ -101,7 +101,7 @@ export default function AdminProfile() {
           <div className="space-y-6">
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium mb-2">Name</label>
+              <label className="block text-sm font-medium mb-2">Admin Name</label>
               <Input
                 name="name"
                 value={formData.name}
@@ -112,7 +112,7 @@ export default function AdminProfile() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label className="block text-sm font-medium mb-2">Admin Email</label>
               <Input
                 name="email"
                 type="email"

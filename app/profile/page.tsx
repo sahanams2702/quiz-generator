@@ -1,127 +1,189 @@
-'use client'
-
+'use client';
 import React, { useState } from 'react';
-import { Edit, Save, Trash } from 'lucide-react'; 
+import { Edit, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
-import DashboardNav from '@/components/dashboard-nav'; // Assuming your DashboardNav component is correctly placed
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import DashboardNav from '@/components/dashboard-nav';
+import { Sidebar } from '@/components/dashboard/sidebar';
 
-export default function Profile() {
-  const [profilePic, setProfilePic] = useState('/path/to/default/profile.jpg'); // Default profile image
-  const [userName, setUserName] = useState('John Doe'); // Default username
-  const [isEditing, setIsEditing] = useState(false); // To toggle edit mode
-  const [quizCount, setQuizCount] = useState(10); // Replace with dynamic quiz count
+export default function AdminProfile() {
+  const initialState = {
+    name: 'John Doe',
+    email: 'john@example.com',
+    profilePic: '/placeholder.jpg',
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  };
 
-  // Handle profile picture change
-  const handleProfilePicChange = (event) => {
+  const [formData, setFormData] = useState(initialState);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleProfilePicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfilePic(reader.result); // Set the new profile picture
+        setFormData(prev => ({
+          ...prev,
+          profilePic: reader.result as string
+        }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Save changes
-  const handleSave = () => {
-    setIsEditing(false);
-    alert('Profile updated successfully');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  // Delete profile
-  const handleDelete = () => {
-    alert('Profile deleted');
+  const handleSave = () => {
+    if (formData.newPassword !== formData.confirmPassword) {
+      alert('New passwords do not match!');
+      return;
+    }
+    
+    console.log('Saving profile:', formData);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setFormData(initialState);
+    setIsEditing(false);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex">
-      {/* Fixed Dashboard Navbar */}
-      <div className="fixed w-1/5 h-full bg-white shadow-md z-10">
+      {/* Sidebar - Fixed position */}
+      <div className="w-64 h-full bg-white shadow-md fixed top-0 left-0">
         <DashboardNav />
       </div>
 
-      {/* Profile Section */}
-      <div className="flex flex-1 ml-[20%] justify-center items-start mt-20 ml-1/5">
-        <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-lg">
-          {/* Profile Pic */}
-          <div className="flex flex-col items-center mb-6">
+      {/* Main Content Area - Scrollable */}
+      <div className="flex-1 ml-64 p-8 overflow-y-auto">
+        <Card className="max-w-2xl mx-auto p-8">
+          <h1 className="text-2xl font-bold text-center mb-8">Profile Settings</h1>
+          
+          {/* Profile Picture */}
+          <div className="flex justify-center mb-8">
             <div className="relative">
-              <Image 
-                src={profilePic} 
-                alt="Profile Picture" 
-                width={120} 
-                height={120} 
-                className="rounded-full object-cover border-4 border-blue-500"
+              <Image
+                src={formData.profilePic}
+                alt="Profile"
+                width={120}
+                height={120}
+                className="rounded-full object-cover border-4 border-gray-200"
               />
               {isEditing && (
-                <label htmlFor="profile-pic" className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 cursor-pointer">
+                <label className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-600">
                   <Edit className="h-4 w-4" />
                   <input
-                    id="profile-pic"
                     type="file"
+                    className="hidden"
                     accept="image/*"
                     onChange={handleProfilePicChange}
-                    className="hidden"
                   />
                 </label>
               )}
             </div>
           </div>
 
-          {/* User Name */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-semibold text-blue-800">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="mt-2 px-4 py-2 border border-gray-300 rounded-lg w-full text-center"
-                  placeholder="Enter your name"
-                />
-              ) : (
-                userName
-              )}
-            </h1>
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="text-blue-600 mt-2"
-              >
-                <Edit className="inline-block mr-1" /> Edit Name
-              </button>
-            )}
-          </div>
-
-          {/* Analytics Section */}
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Quiz Analytics</h2>
-            <div className="w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full">
-              <div 
-                className="h-full bg-blue-600 rounded-full"
-                style={{ width: `${(quizCount / 20) * 100}%` }} // Adjust this based on total quizzes attended
-              ></div>
+          {/* Form Fields */}
+          <div className="space-y-6">
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium mb-2">User Name</label>
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
             </div>
-            <p className="text-center mt-2 text-sm text-gray-600">{quizCount} Quizzes Attended</p>
-          </div>
 
-          {/* Save & Delete Buttons */}
-          <div className="flex justify-between">
-            <button
-              onClick={handleSave}
-              className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 flex items-center"
-            >
-              <Save className="mr-2" /> Save
-            </button>
-            <button
-              onClick={handleDelete}
-              className="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 flex items-center"
-            >
-              <Trash className="mr-2" /> Delete
-            </button>
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium mb-2">User Email</label>
+              <Input
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            {/* Password Fields - Only shown when editing */}
+            {isEditing && (
+              <>
+                {/* Current Password */}
+                <div className="relative">
+                  <label className="block text-sm font-medium mb-2">Current Password</label>
+                  <div className="relative">
+                    <Input
+                      name="currentPassword"
+                      type={showCurrentPassword ? 'text' : 'password'}
+                      value={formData.currentPassword}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      {showCurrentPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-500" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-500" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                
+
+                
+                
+              </>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-4 pt-4">
+              {!isEditing ? (
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-blue-500 hover:bg-blue-600"
+                >
+                  Edit Profile
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSave}
+                    className="bg-blue-500 hover:bg-blue-600"
+                  >
+                    Save Changes
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

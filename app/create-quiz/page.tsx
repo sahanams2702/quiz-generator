@@ -95,16 +95,17 @@ function createquiz() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex">
+    <div className="min-h-screen bg-gradient-to-br  from-purple-400 via-pink-500 to-orange-500 flex">
       {/* Fixed Dashboard Navbar */}
       <div className="fixed">
         <DashboardNav />
       </div>
 
       {/* Content Section (quiz form) */}
-      <div className="bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex-1 ml-[10%] px-8 py-12 flex justify-center items-center">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8 w-[600px]">
+      <div className="flex-1 ml-[10%] px-8 py-12 flex justify-center items-center">
+        <div className="max-w-7xl mx-auto ">
+        <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8 w-full ml-[10%] sm:w-[300px] md:w-[500px] lg:w-[600px]">
+
             <div className="flex justify-between items-center mb-4">
               <div className="text-center">
                 <h1 className="text-3xl font-bold justify-center mb-4 text-black">Create New Quiz</h1>
