@@ -53,7 +53,7 @@ function Dashboard() {
           ];
           setQuestions(allQuestions);
 
-          setQuestions(allQuestions);
+          // setQuestions(allQuestions);
         } else {
           setQuestions([]);
           console.error("Invalid API response format:", data);

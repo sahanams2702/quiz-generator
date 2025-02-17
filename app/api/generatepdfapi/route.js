@@ -25,7 +25,7 @@ export async function POST(req) {
     `;
 
     const topicResult = await generateObject({
-      model: google("gemini-1.5-pro-latest"),
+      model: google("gemini-1.5-flash"),
       schema: z.object({ topic: z.string() }),
       prompt: topicPrompt,
     });
@@ -86,7 +86,7 @@ export async function POST(req) {
       data: {
         topic,
         difficultyLevel: difficulty,
-        numberOfQuestions: 15, // 5 MCQ + 5 MSQ + 5 FIB
+        numberOfQuestions: 15, 
         typeOfQuestions: ["MCQ", "MSQ", "FIB"],
       },
     });

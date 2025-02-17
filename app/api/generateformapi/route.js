@@ -1,141 +1,3 @@
-// app/api/generateTextapi/route.js
-// import { generateObject } from "ai";
-// import { google } from "@ai-sdk/google";
-// import { z } from "zod";
-// import { PrismaClient } from "@prisma/client";
-// export const dynamic = "force-dynamic"; 
-
-// const prisma = new PrismaClient();
-
-// export async function POST(req) {
-  
-//   try {
-//     const { subject, numberOfQuestions, difficultyLevel, questionTypes, specificTopic } = await req.json();
-//     console.log("Request Payload:", { subject, numberOfQuestions, difficultyLevel, questionTypes, specificTopic });
-
-    
-//     const mappedQuestionType = questionTypes[0] === "multiple-choice" ? "MCQ" :
-//                                questionTypes[0] === "multiple-selection" ? "MSQ" :
-//                                questionTypes[0] === "fill-in-the-blank" ? "FIB" :
-//                                questionTypes[0]; 
-//     const topic = subject;
-//     const queno = numberOfQuestions;
-//     const difficulty = difficultyLevel;
-//     const qtype = mappedQuestionType; 
-//     const qadd = specificTopic;
-    
-//     console.log("Processed Payload:", { topic, queno, difficulty, qtype, qadd });
-
-//     let prompt = `Generate a ${difficulty} level quiz on the topic of ${topic}. Focus the questions specifically on ${qadd ? qadd : "general aspects"} within ${topic}. Generate ${queno} ${qtype} questions.`;
-
-//     let QuizSchema;
-//     if (qtype === "MCQ") {
-//       prompt += ` Each question should have 4 answer options and one correct answer clearly marked.`;
-//       QuizSchema = z.object({
-//         questions: z.array(
-//           z.object({
-//             question: z.string(),
-//             options: z.array(z.string()).length(4),
-//             correctAnswer: z.string(),
-//           })
-//         ),
-//       });
-//     } else if (qtype === "MSQ") {
-//       prompt += ` Each question should have 4 options with multiple correct answers.`;
-//       QuizSchema = z.object({
-//         questions: z.array(
-//           z.object({
-//             question: z.string(),
-//             options: z.array(z.string()).length(4),
-//             correctAnswers: z.array(z.string()).min(1),
-//           })
-//         ),
-//       });
-//     } else if (qtype === "FIB") {
-//       prompt += ` Each question should be a fill-in-the-blank question with a single correct answer.`;
-//       QuizSchema = z.object({
-//         questions: z.array(
-//           z.object({
-//             question: z.string(),
-//             correctAnswer: z.string(),
-//           })
-//         ),
-//       });
-//     } else {
-//       return new Response(JSON.stringify({ error: "Invalid question type" }), {
-//         status: 400,
-//         headers: { "Content-Type": "application/json" },
-//       });
-//     }
-
-//     const result = await generateObject({
-//       model: google("gemini-1.5-pro-latest"),
-//       schema: QuizSchema,
-//       prompt: prompt,
-//     });
-
-//     console.log("AI Response:", JSON.stringify(result.object, null, 2));
-
-//     const quiz = await prisma.quiz.create({
-//       data: {
-//         // userId,
-//         topic,
-//         difficultyLevel: difficulty,
-//         numberOfQuestions: queno,
-//         typeOfQuestions: qtype,
-//       },
-//     });
-
-//     // Save Questions Based on Type
-//     if (qtype === "MCQ") {
-//       await prisma.mCQ.createMany({
-//         data: result.object.questions.map((q) => ({
-//           quizId: quiz.id,
-//           questionText: q.question,
-//           option1: q.options[0],
-//           option2: q.options[1],
-//           option3: q.options[2],
-//           option4: q.options[3],
-//           correctAnswer: q.correctAnswer,
-//         })),
-//       });
-//     } else if (qtype === "MSQ") {
-//       await prisma.mSQ.createMany({
-//         data: result.object.questions.map((q) => ({
-//           quizId: quiz.id,
-//           questionText: q.question,
-//           option1: q.options[0],
-//           option2: q.options[1],
-//           option3: q.options[2],
-//           option4: q.options[3],
-//           correctAnswers: q.correctAnswers, // Array type
-//         })),
-//       });
-//     } else if (qtype === "FIB") {
-//       await prisma.fIB.createMany({
-//         data: result.object.questions.map((q) => ({
-//           quizId: quiz.id,
-//           questionText: q.question,
-//           correctAnswer: q.correctAnswer,
-//         })),
-//       });
-//     }
-
-//     return new Response(
-//       JSON.stringify({ success: true, quizId: quiz.id, questions: result.object.questions }),
-//       { status: 200, headers: { "Content-Type": "application/json" } }
-//     );
-//   } catch (error) {
-//     console.error("Error generating quiz:", error);
-//     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-//       status: 500,
-//       headers: { "Content-Type": "application/json" },
-//     });
-//   }
-  
-// }
-
-
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
@@ -163,11 +25,11 @@ export async function POST(req) {
     // Ensure questionTypes is always an array
     const normalizedQuestionTypes = Array.isArray(questionTypes) ? questionTypes : [questionTypes];
 
-    const mappedQuestionTypes = normalizedQuestionTypes.map(type => 
+    const mappedQuestionTypes = normalizedQuestionTypes.map(type =>
       type === "multiple-choice" ? "MCQ" :
-      type === "multiple-selection" ? "MSQ" :
-      type === "fill-in-the-blank" ? "FIB" :
-      type
+        type === "multiple-selection" ? "MSQ" :
+          type === "fib" ? "FIB" :
+            type
     );
 
     if (!mappedQuestionTypes.length) {
@@ -185,33 +47,41 @@ export async function POST(req) {
     const qadd = specificTopic;
 
     console.log("Processed Payload:", { topic, queno, difficulty, qtype, qadd });
-
-    // Construct AI prompt
-    let prompt = `Generate a ${difficulty} level quiz on the topic of ${topic}. 
-                  Focus the questions specifically on ${qadd ? qadd : "general aspects"} within ${topic}.
-                  Generate ${queno} questions of types: ${qtype.join(", ")}.`; 
+    let prompt = `
+    Generate a quiz on the topic of ${topic}. 
+    Generate ${queno} questions, ensuring each question has clear options and a correct answer.`;
+    if (qadd) {
+      prompt += ` The quiz should also cover the specific topic of ${qadd}.`;
+    }
 
     if (qtype.includes("MCQ")) {
-      prompt += ` Some questions should be multiple-choice (MCQ) with 4 answer options and one correct answer.`;
+      prompt += `
+      Include multiple-choice questions (MCQ) with exactly 4 options and one correct answer. 
+      For each MCQ question, make sure to include 4 options and one correct answer. The answer should be one of the options.`;
     }
+
     if (qtype.includes("MSQ")) {
-      prompt += ` Some questions should be multiple-selection (MSQ) with 4 options, where multiple answers are correct.`;
+      prompt += `
+      Include multiple-selection questions (MSQ) with exactly 4 options, where multiple answers are correct.
+      Make sure to clearly indicate which answers are correct, but allow to make sure of selecting multiple correct options.`;
     }
+
     if (qtype.includes("FIB")) {
-      prompt += ` Each question should be a fill-in-the-blank question with a single correct answer. The correct answer must be exactly one word.`;
+      prompt += `
+      Include fill-in-the-blank (FIB) questions with only the correct answer and no options. The correct answer must be a single word.`;
     }
-    
 
     console.log("Final AI Prompt:", prompt);
+ 
 
     // Define Schema to accommodate multiple question types
     const QuizSchema = z.object({
       questions: z.array(
         z.object({
           question: z.string(),
-          options: z.array(z.string()).optional(), 
-          correctAnswer: z.string().optional(), 
-          correctAnswers: z.array(z.string()).optional(), 
+          options: z.array(z.string()).optional(),
+          correctAnswer: z.string().optional(),
+          correctAnswers: z.array(z.string()).optional(),
         })
       ),
     });
@@ -226,26 +96,26 @@ export async function POST(req) {
     // console.log("AI Response:", JSON.stringify(result.object, null, 2));
     console.log("Generated Quiz Questions:\n");
 
-result.object.questions.forEach((q, index) => {
-  console.log(`Q${index + 1}: ${q.question}\n`);
+    result.object.questions.forEach((q, index) => {
+      console.log(`Q${index + 1}: ${q.question}\n`);
 
-  if (q.options) {
-    q.options.forEach((option, i) => {
-      const optionLabel = String.fromCharCode(65 + i); // Convert 0 → A, 1 → B, 2 → C, 3 → D
-      console.log(`  ${optionLabel}. ${option}`);
+      if (q.options) {
+        q.options.forEach((option, i) => {
+          const optionLabel = String.fromCharCode(65 + i); // Convert 0 → A, 1 → B, 2 → C, 3 → D
+          console.log(`  ${optionLabel}. ${option}`);
+        });
+      }
+
+      if (q.correctAnswer) {
+        console.log(`\n✅ Correct Answer: ${q.correctAnswer}\n`);
+      }
+
+      if (q.correctAnswers) {
+        console.log(`\n✅ Correct Answers: ${q.correctAnswers.join(", ")}\n`);
+      }
+
+      console.log("-".repeat(50)); // Separator line
     });
-  }
-
-  if (q.correctAnswer) {
-    console.log(`\n✅ Correct Answer: ${q.correctAnswer}\n`);
-  }
-
-  if (q.correctAnswers) {
-    console.log(`\n✅ Correct Answers: ${q.correctAnswers.join(", ")}\n`);
-  }
-
-  console.log("-".repeat(50)); // Separator line
-});
 
     // Create a quiz entry in the database
     const quiz = await prisma.quiz.create({
@@ -315,6 +185,3 @@ result.object.questions.forEach((q, index) => {
     });
   }
 }
-
-
-

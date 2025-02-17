@@ -12,6 +12,7 @@ import DashboardNav from "@/components/dashboard-nav";
 import { generateTextAPI } from "@/services/generateformservice";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 type QuestionType = "multiple-choice" | "multiple-selection" | "fib";
 type DifficultyLevel = "beginner" | "intermediate" | "advanced";
@@ -65,14 +66,22 @@ function CreateQuiz() {
       setIsLoading(true);
       try {
         const questions = await generateTextAPI(values);
+        console.log("Fetched Questions:", questions); // Log the questions data to inspect it
         if (questions.success && questions.questions) {
-          const allQuestions = [
-            ...(questions.questions.MCQ || []),
-            ...(questions.questions.MSQ || []),
-            ...(questions.questions.FIB || []),
-          ];
-          setGeneratedQuestions(allQuestions);
-          setShowPopover(true);
+          setGeneratedQuestions(questions.questions); // Directly set the questions
+          // Show success SweetAlert with Continue button
+          await Swal.fire({
+            title: "Quiz Generated!",
+            text: "Your quiz has been generated successfully. Click continue to view the quiz.",
+            icon: "success",
+            confirmButtonText: "Continue",
+            confirmButtonColor: '#2d3748', // Dark background color (gray-800)
+            customClass: {
+              confirmButton: 'bg-gray-800 text-white hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+            }
+          }).then(() => {
+            setShowPopover(true); // Show popover when the user clicks Continue
+          });
         } else {
           console.error('Error generating quiz:', questions.error);
         }
@@ -94,16 +103,18 @@ function CreateQuiz() {
     const content = generatedQuestions
       .map((q, index) => {
         let questionText = `Question ${index + 1}: ${q.question}\n`;
-        if (q.options && q.options.length > 0) {
+        
+        if (q.options) {
           questionText += `Options:\n${q.options
             .map((option, i) => `${String.fromCharCode(65 + i)}. ${option}`)
             .join("\n")}\n`;
         }
-        questionText += `Correct Answer: ${q.answer}\n`;
+        
+        questionText += `Correct Answer: ${q.correctAnswer}\n`;
         return questionText;
       })
       .join("\n");
-
+  
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -281,7 +292,6 @@ function CreateQuiz() {
         </div>
       </div>
 
-      {/* Popover for Generated Quiz */}
       {showPopover && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -291,49 +301,36 @@ function CreateQuiz() {
                   Quiz: {formik.values.subject}
                 </h2>
                 <div className="flex gap-4">
-                  <button
-                    onClick={handleDownload}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                    title="Download Quiz"
-                  >
+                  <button onClick={handleDownload} className="text-blue-600">
                     <Download className="w-6 h-6" />
                   </button>
-                  <button
-                    onClick={() => setShowPopover(false)}
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                  >
+                  <button onClick={() => setShowPopover(false)} className="text-gray-500">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
               </div>
               <div className="space-y-6">
-                {generatedQuestions.map((question, index) => (
-                  <div
-                    key={question.id}
-                    className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0"
-                  >
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                      {index + 1}. {question.question}
-                    </h3>
-                    {question.options && question.options.length > 0 && (
-                      <div className="space-y-2">
-                        {question.options.map((option, optIndex) => (
-                          <div
-                            key={optIndex}
-                            className="flex items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-700"
-                          >
-                            <span className="text-gray-700 dark:text-gray-300">
-                              {String.fromCharCode(65 + optIndex)}. {option}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div className="mt-4 text-green-600 dark:text-green-400 font-medium">
-                      Correct Answer: {question.answer}
+                {generatedQuestions.length > 0 ? (
+                  generatedQuestions.map((question, index) => (
+                    <div key={index} className="border-b pb-6">
+                      <h3 className="text-lg font-semibold">{index + 1}. {question.question}</h3>
+                      {question.options && question.options.length > 0 ? (
+                        <ul className="list-disc list-inside space-y-2">
+                          {question.options.map((opt, i) => (
+                            <li key={i}>{opt}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-600">No options available.</p>
+                      )}
+                      <p className="mt-2 text-green-600 font-medium">
+                        Correct Answer: {Array.isArray(question.correctAnswer) ? question.correctAnswer.join(", ") : question.correctAnswer}
+                      </p>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-center text-red-600">No questions generated yet.</p>
+                )}
               </div>
             </div>
           </div>
