@@ -71,14 +71,16 @@ function CreateQuiz() {
           setGeneratedQuestions(questions.questions); // Directly set the questions
           // Show success SweetAlert with Continue button
           await Swal.fire({
-            title: 'Quiz Created!',
-            text: 'Your quiz has been created successfully.',
-            icon: 'success',
-            confirmButtonText: 'Continue',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setShowPopover(true); 
+            title: "Quiz Generated!",
+            text: "Your quiz has been generated successfully. Click continue to view the quiz.",
+            icon: "success",
+            confirmButtonText: "Continue",
+            confirmButtonColor: '#2d3748', // Dark background color (gray-800)
+            customClass: {
+              confirmButton: 'bg-gray-800 text-white hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
             }
+          }).then(() => {
+            setShowPopover(true); // Show popover when the user clicks Continue
           });
         } else {
           console.error('Error generating quiz:', questions.error);
