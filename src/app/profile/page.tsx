@@ -1,132 +1,171 @@
-'use client'
+"use client";
+import React, { useState, useEffect } from "react";
+import { Eye, EyeOff, Loader } from "lucide-react";
+import axios from "axios";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import DashboardNav from "@/components/dashboard-nav";
+import {updateUser} from "./action";
+async function userData() {
+  try {
+    const id = await axios.get("/api/auth/user").then((res) => res.data.userId);
+    const user = await axios.get(`/api/users/${id}`);
+    return user.data;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+}
 
-import React, { useEffect, useState } from 'react';
-import { Edit, Save, Trash } from 'lucide-react'; 
-import Image from 'next/image';
-import DashboardNav from '@/components/dashboard-nav'; // Assuming your DashboardNav component is correctly placed
+export default function AdminProfile() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
 
-export default function Profile() {
-  const [profilePic, setProfilePic] = useState('/path/to/default/profile.jpg'); // Default profile image
-  const [userName, setUserName] = useState('John Doe'); // Default username
-  const [isEditing, setIsEditing] = useState(false); // To toggle edit mode
-  const [quizCount, setQuizCount] = useState(10); // Replace with dynamic quiz count
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [error, setError] = useState("");
 
-  // Handle profile picture change
-  const handleProfilePicChange = (event) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePic(reader.result); // Set the new profile picture
-      };
-      reader.readAsDataURL(file);
+  useEffect(() => {
+    async function fetchUser() {
+      const user = await userData();
+      if (user) {
+        setFormData({
+          name: user.name || "",
+          email: user.email || "",
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      } else {
+        setError("Failed to load user data.");
+      }
+      setLoading(false);
+    }
+    fetchUser();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    if (formData.newPassword !== formData.confirmPassword) {
+      alert("New passwords do not match!");
+      return;
+    }
+
+    try {
+      await updateUser(formData);
+      alert("Profile updated successfully!");
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile.");
     }
   };
 
-  // Save changes
-  const handleSave = () => {
+  const handleCancel = () => {
     setIsEditing(false);
-    alert('Profile updated successfully');
   };
 
-  // Delete profile
-  const handleDelete = () => {
-    alert('Profile deleted');
-  };
-
-  // useEffect(() => { 
-  //   const user = await userData();
-  //   setUserData(user);
-  // }, []); // Fetch user data on mount
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader className="animate-spin h-6 w-6 text-gray-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex">
-      {/* Fixed Dashboard Navbar */}
-      <div className="fixed w-1/5 h-full bg-white shadow-md z-10">
+      {/* Sidebar */}
+      <div className="w-64 h-full bg-white shadow-md fixed top-0 left-0">
         <DashboardNav />
       </div>
 
-      {/* Profile Section */}
-      <div className="flex flex-1 ml-[20%] justify-center items-start mt-20 ml-1/5">
-        <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-lg">
-          {/* Profile Pic */}
-          <div className="flex flex-col items-center mb-6">
-            <div className="relative">
-              <Image 
-                src={profilePic} 
-                alt="Profile Picture" 
-                width={120} 
-                height={120} 
-                className="rounded-full object-cover border-4 border-blue-500"
-              />
-              {isEditing && (
-                <label htmlFor="profile-pic" className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 cursor-pointer">
-                  <Edit className="h-4 w-4" />
-                  <input
-                    id="profile-pic"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfilePicChange}
-                    className="hidden"
-                  />
-                </label>
-              )}
-            </div>
-          </div>
+      {/* Main Content */}
+      <div className="flex-1 ml-64 p-8 overflow-y-auto">
+        <Card className="max-w-2xl mx-auto p-8">
+          <h1 className="text-2xl font-bold text-center mb-8">Profile Settings</h1>
 
-          {/* User Name */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-semibold text-blue-800">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="mt-2 px-4 py-2 border border-gray-300 rounded-lg w-full text-center"
-                  placeholder="Enter your name"
-                />
-              ) : (
-                userName
-              )}
-            </h1>
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="text-blue-600 mt-2"
-              >
-                <Edit className="inline-block mr-1" /> Edit Name
-              </button>
+          {/* Error Message */}
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
+          {/* Form Fields */}
+          <div className="space-y-6">
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium mb-2">User Name</label>
+              <Input name="name" value={formData.name} onChange={handleChange} disabled={!isEditing} />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium mb-2">User Email</label>
+              <Input name="email" type="email" value={formData.email} onChange={handleChange} disabled={!isEditing} />
+            </div>
+
+            {/* Password Fields - Only shown when editing */}
+            {isEditing && (
+              <>
+                {/* New Password */}
+                <div className="relative">
+                  <label className="block text-sm font-medium mb-2">New Password</label>
+                  <div className="relative">
+                    <Input
+                      name="newPassword"
+                      type={showCurrentPassword ? "text" : "password"}
+                      value={formData.newPassword}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      {showCurrentPassword ? <EyeOff className="h-4 w-4 text-gray-500" /> : <Eye className="h-4 w-4 text-gray-500" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Confirm New Password</label>
+                  <Input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} />
+                </div>
+              </>
             )}
-          </div>
 
-          {/* Analytics Section */}
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Quiz Analytics</h2>
-            <div className="w-full h-8 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full">
-              <div 
-                className="h-full bg-blue-600 rounded-full"
-                style={{ width: `${(quizCount / 20) * 100}%` }} // Adjust this based on total quizzes attended
-              ></div>
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-4 pt-4">
+              {!isEditing ? (
+                <Button onClick={() => setIsEditing(true)} className="bg-blue-500 hover:bg-blue-600">
+                  Edit Profile
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave} className="bg-blue-500 hover:bg-blue-600">
+                    Save Changes
+                  </Button>
+                </>
+              )}
             </div>
-            <p className="text-center mt-2 text-sm text-gray-600">{quizCount} Quizzes Attended</p>
           </div>
-
-          {/* Save & Delete Buttons */}
-          <div className="flex justify-between">
-            <button
-              onClick={handleSave}
-              className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 flex items-center"
-            >
-              <Save className="mr-2" /> Save
-            </button>
-            <button
-              onClick={handleDelete}
-              className="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 flex items-center"
-            >
-              <Trash className="mr-2" /> Delete
-            </button>
-          </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

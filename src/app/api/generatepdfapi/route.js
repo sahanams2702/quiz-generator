@@ -2,6 +2,7 @@ import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { cookies } from "next/headers";
 export const dynamic = "force-dynamic"; 
 
 const prisma = new PrismaClient();
@@ -85,7 +86,7 @@ export async function POST(req) {
     console.log("User Id:", userId);
     const quiz = await prisma.quiz.create({
       data: {
-        userId,
+        userId: Number(userId),
         topic,
         difficultyLevel: difficulty,
         numberOfQuestions: 15, // 5 MCQ + 5 MSQ + 5 FIB

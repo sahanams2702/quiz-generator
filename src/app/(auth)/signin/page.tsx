@@ -37,7 +37,7 @@ export default function SignIn() {
     const userData = { email, password };
   
     try {
-      const res = await loginUser(userData); // ✅ Await API response
+      const res = await loginUser(userData);
   
       if (res.error) {  // ✅ Handle API errors
         setIsLoading(false);
@@ -61,7 +61,7 @@ export default function SignIn() {
           },
           background: "#000",
         });
-        return; 
+        return;
       }
   
       setIsLoading(false);
@@ -69,8 +69,13 @@ export default function SignIn() {
         title: "Success",
         description: "Signed in successfully",
       });
-      
-      router.push("/dashboard"); // Redirect to User Dashboard
+  
+      // ✅ Redirect based on user role
+      if (res.user.isAdmin) {
+        router.push("/overview"); // Redirect Admins
+      } else {
+        router.push("/dashboard"); // Redirect Regular Users
+      }
   
     } catch (error) {
       console.error("Login error:", error);
@@ -82,6 +87,7 @@ export default function SignIn() {
       });
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-background">

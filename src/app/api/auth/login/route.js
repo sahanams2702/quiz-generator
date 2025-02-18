@@ -15,6 +15,8 @@ export async function POST(req) {
             return NextResponse.json({ error: "Invalid password" }, { status: 400 });
         }
 
+        const isAdmin = existingUser.isAdmin;
+
         // Store authentication & role in cookies
         cookies().set("user_id", existingUser.id, {
             httpOnly: true,
@@ -24,7 +26,7 @@ export async function POST(req) {
             maxAge: 60 * 60 * 24 * 7, // 7 days
         });
 
-        cookies().set("user_role", existingUser.isAdmin ? "admin" : "user", {
+        cookies().set("user_role", isAdmin ? "admin" : "user", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "Strict",
@@ -32,7 +34,10 @@ export async function POST(req) {
             maxAge: 60 * 60 * 24 * 7, // 7 days
         });
 
-        return NextResponse.json({ message: "Login successful", user: existingUser }, { status: 200 });
+        return NextResponse.json({ 
+            message: "Login successful", 
+            user: { id: existingUser.id, email: existingUser.email, isAdmin }
+        }, { status: 200 });
     } catch (error) {
         console.error("Login error:", error);
         return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

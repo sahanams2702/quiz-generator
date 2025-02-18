@@ -1,19 +1,41 @@
-'use client'
+'use client';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { BookOpen, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, Trash2, ChevronDown, ChevronUp, Save } from 'lucide-react';
 import DashboardNav from '@/components/dashboard-nav';
 import { getQuizzes, getQuestions } from './action';
 import axios from 'axios';
 
+// Define types
+interface Quiz {
+  id: number;
+  createdAt: string;
+  topic: string;
+  difficultyLevel: string;
+  numberOfQuestions: number;
+  typeOfQuestions: string[];
+}
+
+interface Question {
+  id: number;
+  questionText: string;
+  type: 'MCQ' | 'MSQ' | 'FIB';
+  correctAnswer?: string;
+  correctAnswers?: string[];
+  option1?: string;
+  option2?: string;
+  option3?: string;
+  option4?: string;
+}
+
 export default function History() {
-  const [quizzes, setQuizzes] = useState([]);
-  const [expandedQuiz, setExpandedQuiz] = useState(null);
-  const [questions, setQuestions] = useState({});
-  const [editedQuestions, setEditedQuestions] = useState({});
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [expandedQuiz, setExpandedQuiz] = useState<number | null>(null);
+  const [questions, setQuestions] = useState<{ [quizId: number]: { [key: string]: Question } }>({});
+  const [editedQuestions, setEditedQuestions] = useState<{ [key: string]: Question }>({});
 
   useEffect(() => {
     fetchQuizzes();
@@ -21,23 +43,31 @@ export default function History() {
 
   const fetchQuizzes = async () => {
     try {
-      const quizData = await getQuizzes();
+      const quizData: Quiz[] = await getQuizzes();
       setQuizzes(quizData);
     } catch (error) {
       console.error('Error fetching quizzes:', error);
     }
   };
 
-  const toggleQuizQuestions = async (quiz) => {
+  const toggleQuizQuestions = async (quiz: Quiz) => {
     if (expandedQuiz === quiz.id) {
       setExpandedQuiz(null);
     } else {
       setExpandedQuiz(quiz.id);
       if (!questions[quiz.id]) {
         try {
-          const questionData = await getQuestions(quiz.id);
-          setQuestions(prev => ({ ...prev, [quiz.id]: questionData }));
-          setEditedQuestions(questionData.reduce((acc, q) => ({ ...acc, [q.id]: q }), {}));
+          const questionData: Question[] = await getQuestions(quiz.id);
+
+          // Structure questions with unique keys
+          const structuredQuestions = questionData.reduce((acc, q) => {
+            const key = `${q.type}-${q.id}`;
+            acc[key] = { ...q, type: q.type };
+            return acc;
+          }, {} as { [key: string]: Question });
+
+          setQuestions((prev) => ({ ...prev, [quiz.id]: structuredQuestions }));
+          setEditedQuestions(structuredQuestions);
         } catch (error) {
           console.error('Error fetching questions:', error);
         }
@@ -45,43 +75,46 @@ export default function History() {
     }
   };
 
-  const handleDeleteQuiz = async (quizId) => {
+  const handleDeleteQuiz = async (quizId: number) => {
     try {
       await axios.delete(`/api/quizzes/${quizId}`);
-      setQuizzes(quizzes.filter(q => q.id !== quizId));
+      setQuizzes((quizzes) => quizzes.filter((q) => q.id !== quizId));
       setExpandedQuiz(null);
     } catch (error) {
       console.error('Error deleting quiz:', error);
     }
   };
 
-  const handleDeleteQuestion = async (quizId, questionId) => {
+  const handleDeleteQuestion = async (quizId: number, question: Question) => {
     try {
-      await axios.delete(`/api/questions/${questionId}`);
-      setQuestions(prev => ({
-        ...prev,
-        [quizId]: prev[quizId].filter(q => q.id !== questionId)
-      }));
+      await axios.delete(`/api/questions/${question.id}?type=${question.type}`);
+      setQuestions((prev) => {
+        const updatedQuestions = { ...prev[quizId] };
+        delete updatedQuestions[`${question.type}-${question.id}`];
+        return { ...prev, [quizId]: updatedQuestions };
+      });
     } catch (error) {
       console.error('Error deleting question:', error);
     }
   };
 
-  const handleEditChange = (id, field, value) => {
-    setEditedQuestions(prev => ({
+  const handleEditChange = (key: string, field: keyof Question, value: string | string[]) => {
+    setEditedQuestions((prev) => ({
       ...prev,
-      [id]: { ...prev[id], [field]: value }
+      [key]: { ...prev[key], [field]: value },
     }));
   };
 
-  const handleSaveChanges = async (question) => {
+  const handleSaveChanges = async (question: Question) => {
+    const key = `${question.type}-${question.id}`;
     try {
-      await axios.put(`/api/questions/${question.id}`, editedQuestions[question.id]);
-      setQuestions(prev => ({
+      await axios.put(`/api/questions/${question.id}?type=${question.type}`, editedQuestions[key]);
+      setQuestions((prev) => ({
         ...prev,
-        [expandedQuiz]: prev[expandedQuiz].map(q => 
-          q.id === question.id ? editedQuestions[question.id] : q
-        )
+        [expandedQuiz!]: {
+          ...prev[expandedQuiz!],
+          [key]: editedQuestions[key],
+        },
       }));
     } catch (error) {
       console.error('Error updating question:', error);
@@ -102,6 +135,7 @@ export default function History() {
             {quizzes.length > 0 ? (
               quizzes.map((quiz) => (
                 <div key={quiz.id} className="w-full">
+                  {/* Quiz Card */}
                   <Card className="relative w-full cursor-pointer" onClick={() => toggleQuizQuestions(quiz)}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
@@ -110,59 +144,52 @@ export default function History() {
                       <BookOpen className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent className="flex flex-row items-center justify-between space-x-4 py-2">
-                      <div className="flex flex-col">
-                        <div className="text-lg font-bold">{quiz.topic}</div>
-                        <div className="text-sm text-muted">{quiz.difficultyLevel}</div>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <div className="text-sm">No of Questions</div>
-                        <div className="text-lg font-bold">{quiz.numberOfQuestions}</div>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <div className="text-sm">Type of Questions</div>
-                        <div className="text-lg font-bold">
-                          {quiz.typeOfQuestions.join(', ')}
-                        </div>
-                      </div>
+                      <div className="text-lg font-bold">{quiz.topic}</div>
+                      <div className="text-sm">{quiz.difficultyLevel}</div>
+                      <div className="text-lg font-bold">{quiz.numberOfQuestions}</div>
+                      <div className="text-lg font-bold">{quiz.typeOfQuestions.join(', ')}</div>
                       <div className="text-gray-600">
                         {expandedQuiz === quiz.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                       </div>
                     </CardContent>
                   </Card>
 
-                  <div className="absolute top-3 right-3">
-                    <Button variant="destructive" size="icon" onClick={() => handleDeleteQuiz(quiz.id)}>
-                      <Trash2 className="h-5 w-5" />
-                    </Button>
-                  </div>
-
+                  {/* Expanded Questions Div */}
                   {expandedQuiz === quiz.id && (
                     <div className="mt-4 p-4 border rounded-lg bg-gray-100">
                       <h2 className="text-lg font-bold">Questions</h2>
-                      {questions[quiz.id] && questions[quiz.id].length > 0 ? (
-                        questions[quiz.id].map((question) => (
-                          <div className="border p-2 rounded-lg mt-2 bg-white">
-                            <Input
-                              value={editedQuestions[question.id]?.question_text || ''}
-                              onChange={(e) => handleEditChange(question.id, 'question_text', e.target.value)}
-                            />
-                            {question.option1 && (
-                              <Textarea
-                                value={editedQuestions[question.id]?.correct_answer || ''}
-                                onChange={(e) => handleEditChange(question.id, 'correct_answer', e.target.value)}
+                      {questions[quiz.id] && Object.values(questions[quiz.id]).length > 0 ? (
+                        Object.values(questions[quiz.id]).map((question) => {
+                          const key = `${question.type}-${question.id}`;
+                          return (
+                            <div key={key} className="border p-4 rounded-lg mt-2 bg-white shadow">
+                              <Input
+                                value={editedQuestions[key]?.questionText || ''}
+                                onChange={(e) => handleEditChange(key, 'questionText', e.target.value)}
                               />
-                            )}
-                            <div className="flex justify-between mt-2">
-                              <Button variant="secondary" size="sm" onClick={() => handleSaveChanges(question)}>Save</Button>
-                              <Button variant="destructive" size="sm" onClick={() => handleDeleteQuestion(quiz.id, question.id)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                              <Textarea
+                                value={editedQuestions[key]?.correctAnswer || ''}
+                                onChange={(e) => handleEditChange(key, 'correctAnswer', e.target.value)}
+                              />
+                              <div className="flex justify-between mt-2">
+                                <Button variant="secondary" size="sm" onClick={() => handleSaveChanges(question)}>
+                                  <Save className="h-4 w-4 mr-1" /> Save
+                                </Button>
+                                <Button variant="destructive" size="sm" onClick={() => handleDeleteQuestion(quiz.id, question)}>
+                                  <Trash2 className="h-4 w-4 mr-1" /> Delete
+                                </Button>
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          );
+                        })
                       ) : (
                         <p>No questions found.</p>
                       )}
+                      <div className="flex justify-end mt-4">
+                        <Button variant="destructive" onClick={() => handleDeleteQuiz(quiz.id)}>
+                          <Trash2 className="h-5 w-5 mr-1" /> Delete Quiz
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>

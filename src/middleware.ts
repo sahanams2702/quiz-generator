@@ -7,7 +7,7 @@ async function middleware(req: NextRequest) {
     const userRole = (await cookies()).get("user_role")?.value;
 
     const protectedRoutes = ["/dashboard", "/history", "/profile"];
-    const adminRoutes = ["/admin/dashboard", "/admin/users", "/admin/analytics"];
+    const adminRoutes = ["/overview", "/admin/users", "/admin/analytics"];
 
     const { pathname } = req.nextUrl;
 
@@ -29,7 +29,7 @@ async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/dashboard", "/history", "/profile", "/admin/:path*"],
+    matcher: ["/history", "/profile", "/admin/:path*"],
 };
 
 export default middleware;

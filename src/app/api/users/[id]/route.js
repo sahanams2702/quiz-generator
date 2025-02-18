@@ -23,9 +23,10 @@ export async function PATCH(req, { params }) {
         const userData = await req.json();
         const id = Number(params.id);
         console.log(userData, id);
+        const {name, newPassword} = userData;
         const updatedUser = await prisma.user.update({
             where: { id: id },
-            data: userData,
+            data: {name, password: newPassword},
         });
 
         return NextResponse.json({ message: "User updated", user: updatedUser }, { status: 200 });

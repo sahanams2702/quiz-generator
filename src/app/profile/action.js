@@ -6,3 +6,8 @@ export async function userData() {
     console.log(user.data);
     return user.data;
 }
+
+export async function updateUser(userData) {
+    const id = await axios.get('api/auth/user').then(res=>res.data.userId);
+    const res = await axios.patch('api/users/' + id, userData);
+}
