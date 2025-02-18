@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookOpen, Trash2, ChevronDown, ChevronUp, Save } from 'lucide-react';
 import DashboardNav from '@/components/dashboard-nav';
 import { getQuizzes, getQuestions } from './action';
@@ -33,9 +35,9 @@ interface Question {
 
 export default function History() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [expandedQuiz, setExpandedQuiz] = useState<number | null>(null);
   const [questions, setQuestions] = useState<{ [quizId: number]: { [key: string]: Question } }>({});
   const [editedQuestions, setEditedQuestions] = useState<{ [key: string]: Question }>({});
+  const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
 
   useEffect(() => {
     fetchQuizzes();
@@ -50,27 +52,20 @@ export default function History() {
     }
   };
 
-  const toggleQuizQuestions = async (quiz: Quiz) => {
-    if (expandedQuiz === quiz.id) {
-      setExpandedQuiz(null);
-    } else {
-      setExpandedQuiz(quiz.id);
-      if (!questions[quiz.id]) {
-        try {
-          const questionData: Question[] = await getQuestions(quiz.id);
+  const fetchQuestions = async (quizId: number) => {
+    if (!questions[quizId]) {
+      try {
+        const questionData: Question[] = await getQuestions(quizId);
+        const structuredQuestions = questionData.reduce((acc, q) => {
+          const key = `${q.type}-${q.id}`;
+          acc[key] = { ...q, type: q.type };
+          return acc;
+        }, {} as { [key: string]: Question });
 
-          // Structure questions with unique keys
-          const structuredQuestions = questionData.reduce((acc, q) => {
-            const key = `${q.type}-${q.id}`;
-            acc[key] = { ...q, type: q.type };
-            return acc;
-          }, {} as { [key: string]: Question });
-
-          setQuestions((prev) => ({ ...prev, [quiz.id]: structuredQuestions }));
-          setEditedQuestions(structuredQuestions);
-        } catch (error) {
-          console.error('Error fetching questions:', error);
-        }
+        setQuestions((prev) => ({ ...prev, [quizId]: structuredQuestions }));
+        setEditedQuestions(structuredQuestions);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
       }
     }
   };
@@ -79,7 +74,6 @@ export default function History() {
     try {
       await axios.delete(`/api/quizzes/${quizId}`);
       setQuizzes((quizzes) => quizzes.filter((q) => q.id !== quizId));
-      setExpandedQuiz(null);
     } catch (error) {
       console.error('Error deleting quiz:', error);
     }
@@ -111,8 +105,8 @@ export default function History() {
       await axios.put(`/api/questions/${question.id}?type=${question.type}`, editedQuestions[key]);
       setQuestions((prev) => ({
         ...prev,
-        [expandedQuiz!]: {
-          ...prev[expandedQuiz!],
+        [selectedQuiz!.id]: {
+          ...prev[selectedQuiz!.id],
           [key]: editedQuestions[key],
         },
       }));
@@ -127,72 +121,38 @@ export default function History() {
         <DashboardNav />
       </div>
 
-      <div className="flex-1 ml-[20%] px-4 py-12 flex justify-center items-center bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500">
+      <div className="flex-1 ml-[20%] px-4 py-12 flex justify-center items-center">
         <div className="container mx-auto p-8 rounded-2xl shadow-xl w-full max-w-3xl bg-white">
           <h1 className="text-3xl font-bold text-black mb-6 text-center">History</h1>
 
           <div className="flex flex-col gap-4 mt-8">
             {quizzes.length > 0 ? (
               quizzes.map((quiz) => (
-                <div key={quiz.id} className="w-full">
-                  {/* Quiz Card */}
-                  <Card className="relative w-full cursor-pointer" onClick={() => toggleQuizQuestions(quiz)}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        {new Date(quiz.createdAt).toLocaleString()}
-                      </CardTitle>
-                      <BookOpen className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent className="flex flex-row items-center justify-between space-x-4 py-2">
-                      <div className="text-lg font-bold">{quiz.topic}</div>
-                      <div className="text-sm">{quiz.difficultyLevel}</div>
-                      <div className="text-lg font-bold">{quiz.numberOfQuestions}</div>
-                      <div className="text-lg font-bold">{quiz.typeOfQuestions.join(', ')}</div>
-                      <div className="text-gray-600">
-                        {expandedQuiz === quiz.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Expanded Questions Div */}
-                  {expandedQuiz === quiz.id && (
-                    <div className="mt-4 p-4 border rounded-lg bg-gray-100">
-                      <h2 className="text-lg font-bold">Questions</h2>
-                      {questions[quiz.id] && Object.values(questions[quiz.id]).length > 0 ? (
-                        Object.values(questions[quiz.id]).map((question) => {
-                          const key = `${question.type}-${question.id}`;
-                          return (
-                            <div key={key} className="border p-4 rounded-lg mt-2 bg-white shadow">
-                              <Input
-                                value={editedQuestions[key]?.questionText || ''}
-                                onChange={(e) => handleEditChange(key, 'questionText', e.target.value)}
-                              />
-                              <Textarea
-                                value={editedQuestions[key]?.correctAnswer || ''}
-                                onChange={(e) => handleEditChange(key, 'correctAnswer', e.target.value)}
-                              />
-                              <div className="flex justify-between mt-2">
-                                <Button variant="secondary" size="sm" onClick={() => handleSaveChanges(question)}>
-                                  <Save className="h-4 w-4 mr-1" /> Save
-                                </Button>
-                                <Button variant="destructive" size="sm" onClick={() => handleDeleteQuestion(quiz.id, question)}>
-                                  <Trash2 className="h-4 w-4 mr-1" /> Delete
-                                </Button>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <p>No questions found.</p>
-                      )}
-                      <div className="flex justify-end mt-4">
-                        <Button variant="destructive" onClick={() => handleDeleteQuiz(quiz.id)}>
-                          <Trash2 className="h-5 w-5 mr-1" /> Delete Quiz
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Card key={quiz.id} className="relative w-full">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-lg font-bold">{quiz.topic}</CardTitle>
+                    <BookOpen className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-4 gap-4 items-center">
+                    <Badge variant="outline" className="px-3 py-1">Level: {quiz.difficultyLevel}</Badge>
+                    <Badge variant="outline" className="px-3 py-1">Questions: {quiz.numberOfQuestions}</Badge>
+                    
+                    <Dialog>
+                    <Badge variant="outline" className="px-3 py-1">Type: {quiz.typeOfQuestions.join(', ')}</Badge>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedQuiz(quiz);
+                          fetchQuestions(quiz.id);
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </DialogTrigger>
+                    </Dialog>
+                  </CardContent>
+                </Card>
               ))
             ) : (
               <div>No quizzes found.</div>
@@ -200,6 +160,48 @@ export default function History() {
           </div>
         </div>
       </div>
+
+      {/* Quiz Details Dialog */}
+      {selectedQuiz && (
+        <Dialog open={!!selectedQuiz} onOpenChange={() => setSelectedQuiz(null)}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">{selectedQuiz.topic}</DialogTitle>
+            </DialogHeader>
+            <div className="mt-6">
+              <div className="space-y-6">
+                {questions[selectedQuiz.id] && Object.values(questions[selectedQuiz.id]).length > 0 ? (
+                  Object.values(questions[selectedQuiz.id]).map((question) => {
+                    const key = `${question.type}-${question.id}`;
+                    return (
+                      <div key={key} className="border p-4 rounded-lg mt-2 bg-white shadow">
+                        <Input
+                          value={editedQuestions[key]?.questionText || ''}
+                          onChange={(e) => handleEditChange(key, 'questionText', e.target.value)}
+                        />
+                        <Textarea
+                          value={editedQuestions[key]?.correctAnswer || editedQuestions[key]?.correctAnswers || ''}
+                          onChange={(e) => handleEditChange(key, 'correctAnswer', e.target.value)}
+                        />
+                        {/* <div className="flex justify-between mt-2">
+                          <Button variant="secondary" size="sm" onClick={() => handleSaveChanges(question)}>
+                            <Save className="h-4 w-4 mr-1" /> Save
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteQuestion(selectedQuiz.id, question)}>
+                            <Trash2 className="h-4 w-4 mr-1" /> Delete
+                          </Button>
+                        </div> */}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>No questions found.</p>
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

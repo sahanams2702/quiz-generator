@@ -21,7 +21,7 @@ export async function POST(req) {
 
     // Step 1: Extract Topic Dynamically
     const topicPrompt = `
-      Analyze the following content and extract the main topic concisely in a single sentence.
+      Analyze the following content and extract the main topic concisely in a two words.
       Content: """${pdfContent}"""
     `;
 

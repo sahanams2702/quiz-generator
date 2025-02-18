@@ -1,18 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import {
-  BookOpen,
-  Brain,
-  List,
-  AlertCircle,
-  X,
-  Download,
-} from "lucide-react";
+import { BookOpen, Brain, List, AlertCircle, X, Download } from "lucide-react";
 import DashboardNav from "@/components/dashboard-nav";
 import { generateTextAPI } from "@/services/generateformservice";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from "sweetalert2";
+import { jsPDF } from "jspdf";
 
 type QuestionType = "multiple-choice" | "multiple-selection" | "fib";
 type DifficultyLevel = "beginner" | "intermediate" | "advanced";
@@ -53,7 +47,10 @@ function CreateQuiz() {
       .max(50, "Max 50 questions")
       .required("Number of questions is required"),
     difficultyLevel: Yup.string()
-      .oneOf(["beginner", "intermediate", "advanced"], "Invalid difficulty level")
+      .oneOf(
+        ["beginner", "intermediate", "advanced"],
+        "Invalid difficulty level"
+      )
       .required("Difficulty level is required"),
     specificTopic: Yup.string().required("Specific topic is required"),
     questionTypes: Yup.array().min(1, "At least one question type is required"),
@@ -67,7 +64,9 @@ function CreateQuiz() {
       try {
         const questions = await generateTextAPI(values);
         console.log("Fetched Questions:", questions); // Log the questions data to inspect it
-        if (questions.success && questions.questions) {
+    
+        // Check if 'questions' exists in the response and is an array
+        if (questions && Array.isArray(questions.questions)) {
           setGeneratedQuestions(questions.questions); // Directly set the questions
           // Show success SweetAlert with Continue button
           await Swal.fire({
@@ -75,22 +74,23 @@ function CreateQuiz() {
             text: "Your quiz has been generated successfully. Click continue to view the quiz.",
             icon: "success",
             confirmButtonText: "Continue",
-            confirmButtonColor: '#2d3748', // Dark background color (gray-800)
+            confirmButtonColor: "#2d3748", 
             customClass: {
-              confirmButton: 'bg-gray-800 text-white hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-            }
+              confirmButton: "bg-gray-800 text-white hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+            },
           }).then(() => {
-            setShowPopover(true); // Show popover when the user clicks Continue
+            setShowPopover(true);
           });
         } else {
-          console.error('Error generating quiz:', questions.error);
+          console.error("Error generating quiz: No questions found in the response");
         }
       } catch (error) {
-        console.error('Error processing PDF:', error);
+        console.error("Error processing quiz generation:", error);
       } finally {
         setIsLoading(false);
       }
-    },
+    }
+    
   });
 
   const questionTypeOptions: { value: QuestionType; label: string }[] = [
@@ -99,33 +99,49 @@ function CreateQuiz() {
     { value: "fib", label: "Fill in the Blank (FIB)" },
   ];
 
-  const handleDownload = () => {
-    const content = generatedQuestions
-      .map((q, index) => {
-        let questionText = `Question ${index + 1}: ${q.question}\n`;
-        
-        if (q.options) {
-          questionText += `Options:\n${q.options
-            .map((option, i) => `${String.fromCharCode(65 + i)}. ${option}`)
-            .join("\n")}\n`;
-        }
-        
-        questionText += `Correct Answer: ${q.correctAnswer}\n`;
-        return questionText;
-      })
-      .join("\n");
-  
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${formik.values.subject.toLowerCase().replace(/\s+/g, "-")}-quiz.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  const downloadQuizPDF = () => {
+    if (!generatedQuestions.length) return;
 
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Generated Quiz", 10, 10);
+
+    let yPosition = 20; // Initial position
+
+    generatedQuestions.forEach((q, index) => {
+      if (yPosition > 270) {
+        doc.addPage();
+        yPosition = 20; // Reset position for new page
+      }
+
+      doc.setFontSize(12);
+      doc.text(`${index + 1}. ${q.question}`, 10, yPosition);
+      yPosition += 7;
+
+      if (q.options && q.options.length) {
+        q.options.forEach((option, idx) => {
+          doc.text(
+            `  ${String.fromCharCode(65 + idx)}. ${option}`,
+            15,
+            yPosition
+          );
+          yPosition += 6;
+        });
+      }
+
+      let correctAnsText = Array.isArray(q.answer)
+        ? q.answer.join(", ")
+        : q.answer;
+      doc.setTextColor(0, 128, 0); 
+      doc.text(`✔ Correct Answer: ${correctAnsText}`, 10, yPosition);
+      doc.setTextColor(0, 0, 0); 
+
+      yPosition += 10; 
+    });
+
+    doc.save("quiz.pdf");
+  };
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex">
       {/* Fixed Dashboard Navigation */}
@@ -232,7 +248,9 @@ function CreateQuiz() {
                     >
                       <input
                         type="checkbox"
-                        checked={formik.values.questionTypes.includes(type.value)}
+                        checked={formik.values.questionTypes.includes(
+                          type.value
+                        )}
                         onChange={() => {
                           const newTypes = formik.values.questionTypes.includes(
                             type.value
@@ -301,10 +319,16 @@ function CreateQuiz() {
                   Quiz: {formik.values.subject}
                 </h2>
                 <div className="flex gap-4">
-                  <button onClick={handleDownload} className="text-blue-600">
-                    <Download className="w-6 h-6" />
-                  </button>
-                  <button onClick={() => setShowPopover(false)} className="text-gray-500">
+                <button
+                  onClick={downloadQuizPDF}
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+                >
+                  <Download className="w-5 h-5 mr-2" /> Download Quiz
+                </button>
+                  <button
+                    onClick={() => setShowPopover(false)}
+                    className="text-gray-500"
+                  >
                     <X className="w-6 h-6" />
                   </button>
                 </div>
@@ -313,7 +337,9 @@ function CreateQuiz() {
                 {generatedQuestions.length > 0 ? (
                   generatedQuestions.map((question, index) => (
                     <div key={index} className="border-b pb-6">
-                      <h3 className="text-lg font-semibold">{index + 1}. {question.question}</h3>
+                      <h3 className="text-lg font-semibold">
+                        {index + 1}. {question.question}
+                      </h3>
                       {question.options && question.options.length > 0 ? (
                         <ul className="list-disc list-inside space-y-2">
                           {question.options.map((opt, i) => (
@@ -321,15 +347,21 @@ function CreateQuiz() {
                           ))}
                         </ul>
                       ) : (
-                        <p className="text-gray-600">No options available.</p>
+                        <p className="text-gray-600"></p>
                       )}
                       <p className="mt-2 text-green-600 font-medium">
-                        Correct Answer: {Array.isArray(question.correctAnswer) ? question.correctAnswer.join(", ") : question.correctAnswer}
+                        Correct Answer:{" "}
+                        {question.type.toLowerCase() === "multiple-selection" ||
+                        question.type.toLowerCase() === "msq"
+                          ? question.correctAnswers?.join(", ")
+                          : question.correctAnswer}
                       </p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-red-600">No questions generated yet.</p>
+                  <p className="text-center text-red-600">
+                    No questions generated yet.
+                  </p>
                 )}
               </div>
             </div>

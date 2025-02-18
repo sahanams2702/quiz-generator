@@ -125,11 +125,11 @@ Correct Answer: ${q.answer}
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-500 flex">
-      <div className="w-64 bg-white dark:bg-black border-r border-gray-100 dark:border-gray-700 fixed">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex">
+      <div className="w-64 border-r fixed">
         <DashboardNav />
       </div>
-      <div className="p-6 ml-[20%] w-full bg-gradient-to-br px-8 py-12 from-purple-500 via-pink-500 to-orange-500">
+      <div className="p-6 ml-[20%] w-full px-8 py-12 ">
         <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
           Dashboard
         </h1>

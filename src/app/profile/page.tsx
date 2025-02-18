@@ -18,7 +18,7 @@ async function userData() {
   }
 }
 
-export default function AdminProfile() {
+export default function Profile() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,7 +28,6 @@ export default function AdminProfile() {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,7 +45,6 @@ export default function AdminProfile() {
       } else {
         setError("Failed to load user data.");
       }
-      setLoading(false);
     }
     fetchUser();
   }, []);
@@ -67,7 +65,6 @@ export default function AdminProfile() {
 
     try {
       await updateUser(formData);
-      alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -78,14 +75,6 @@ export default function AdminProfile() {
   const handleCancel = () => {
     setIsEditing(false);
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader className="animate-spin h-6 w-6 text-gray-600" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 flex">

@@ -1,180 +1,198 @@
 'use client';
-
-import { Card } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Sidebar } from '@/components/dashboard/sidebar';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { BookOpen, Trash2, ChevronDown, ChevronUp, Save } from 'lucide-react';
+import DashboardNav from '@/components/dashboard-nav';
+import { getQuizzes, getQuestions } from './action';
+import axios from 'axios';
+import { Sidebar } from '@/components/dashboard/sidebar';
 
+// Define types
+interface Quiz {
+  id: number;
+  createdAt: string;
+  topic: string;
+  difficultyLevel: string;
+  numberOfQuestions: number;
+  typeOfQuestions: string[];
+}
 
-const quizzes = [
-  {
-    id: 1,
-    title: 'JavaScript Fundamentals',
-    nameOfUser: 'John Doe',
-    type: ['MCQ', 'MSQ'],  // Multiple types (MCQ and MSQ)
-    level: 'Intermediate',
-    questions: [
-      {
-        question: 'What is closure in JavaScript?',
-        options: [
-          'A function that has access to variables in its outer scope',
-          'A way to close browser window',
-          'A method to end a loop',
-          'A type of variable declaration'
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: 'Which of these is not a JavaScript data type?',
-        options: [
-          'String',
-          'Boolean',
-          'Float',
-          'Number'
-        ],
-        correctAnswer: 2
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: 'React Hooks Deep Dive',
-    nameOfUser: 'John',
-    type: ['MSQ', 'FIB'],  // Multiple types (MSQ and FIB)
-    level: 'Advanced',
-    questions: [
-      {
-        question: 'Which hooks can be used for performance optimization?',
-        options: [
-          'useMemo',
-          'useCallback',
-          'useEffect',
-          'useRef'
-        ],
-        correctAnswers: [0, 1]
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: 'TypeScript Basics',
-    nameOfUser: 'sana',
-    type: ['FIB'],  // Single type (FIB)
-    level: 'Easy',
-    questions: [
-      {
-        question: 'What is the type annotation for arrays in TypeScript?',
-        answer: 'type[]'
-      }
-    ]
-  },
-  {
-    id: 4,
-    title: 'Next.js Masterclass',
-    nameOfUser: 'paddu',
-    type: ['MCQ', 'FIB'],  // Multiple types (MCQ and FIB)
-    level: 'Advanced',
-    questions: [
-      {
-        question: 'What is the purpose of getStaticProps?',
-        options: [
-          'To fetch data at build time',
-          'To fetch data on every request',
-          'To fetch data on client side',
-          'To fetch data periodically'
-        ],
-        correctAnswer: 0
-      }
-    ]
-  }
-];
+interface Question {
+  id: number;
+  questionText: string;
+  type: 'MCQ' | 'MSQ' | 'FIB';
+  correctAnswer?: string;
+  correctAnswers?: string[];
+  option1?: string;
+  option2?: string;
+  option3?: string;
+  option4?: string;
+}
 
 export default function Quizzes() {
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [questions, setQuestions] = useState<{ [quizId: number]: Question[] }>({});
+  const [editedQuestions, setEditedQuestions] = useState<{ [key: string]: Question }>({});
+  const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
+
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+
+  const fetchQuizzes = async () => {
+    try {
+      const quizData: Quiz[] = await getQuizzes();
+      setQuizzes(quizData);
+    } catch (error) {
+      console.error('Error fetching quizzes:', error);
+    }
+  };
+
+  const fetchQuestions = async (quizId: number) => {
+    try {
+      const questionData: Question[] = await getQuestions(quizId);
+      setQuestions((prev) => ({
+        ...prev,
+        [quizId]: questionData,
+      }));
+      setEditedQuestions({}); // Reset edited questions state
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+    }
+  };
+
+  const handleDeleteQuiz = async (quizId: number) => {
+    try {
+      await axios.delete(`/api/quizzes/${quizId}`);
+      setQuizzes((quizzes) => quizzes.filter((q) => q.id !== quizId));
+    } catch (error) {
+      console.error('Error deleting quiz:', error);
+    }
+  };
+
+  const handleDeleteQuestion = async (quizId: number, question: Question) => {
+    try {
+      await axios.delete(`/api/questions/${question.id}?type=${question.type}`);
+      setQuestions((prev) => {
+        const updatedQuestions = prev[quizId].filter(q => q.id !== question.id);
+        return { ...prev, [quizId]: updatedQuestions };
+      });
+    } catch (error) {
+      console.error('Error deleting question:', error);
+    }
+  };
+
+  const handleEditChange = (question: Question, field: keyof Question, value: string | string[]) => {
+    const updatedEditedQuestions = { ...editedQuestions };
+    updatedEditedQuestions[`${question.type}-${question.id}`] = {
+      ...question,
+      [field]: value,
+    };
+    setEditedQuestions(updatedEditedQuestions);
+  };
+
+  const handleSaveChanges = async (question: Question) => {
+    try {
+      await axios.put(`/api/questions/${question.id}?type=${question.type}`, editedQuestions[`${question.type}-${question.id}`]);
+      setQuestions((prev) => ({
+        ...prev,
+        [selectedQuiz!.id]: prev[selectedQuiz!.id].map((q) =>
+          q.id === question.id ? { ...q, ...editedQuestions[`${question.type}-${question.id}`] } : q
+        ),
+      }));
+    } catch (error) {
+      console.error('Error updating question:', error);
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">
-      <div className="w-64 border-r">
+    <div className="flex min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">
+      <div className="fixed w-64 h-full">
         <Sidebar />
       </div>
-      <div className="flex-1 overflow-auto">
-        <header className="flex h-16 items-center justify-between border-b px-6">
-          <h1 className="text-2xl font-semibold">Quizzes</h1>
-          <div className="flex items-center gap-4">
-          </div>
-        </header>
-        <main className="p-6">
-          <div className="grid gap-4">
-            {quizzes.map((quiz) => (
-              <Card key={quiz.id} className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">{quiz.title}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {quiz.nameOfUser}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-8">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold">{quiz.questions.length}</p>
-                      <p className="text-sm text-muted-foreground">Questions</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold">{quiz.type.join(', ')}</p>
-                      <p className="text-sm text-muted-foreground">Type of questions</p>
-                    </div>
+
+      <div className="flex-1 ml-[20%] px-4 py-12 flex justify-center items-center">
+        <div className="container mx-auto p-8 rounded-2xl shadow-xl w-full max-w-3xl bg-white">
+          <h1 className="text-3xl font-bold text-black mb-6 text-center">History</h1>
+
+          <div className="flex flex-col gap-4 mt-8">
+            {quizzes.length > 0 ? (
+              quizzes.map((quiz) => (
+                <Card key={quiz.id} className="relative w-full">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-lg font-bold">{quiz.topic}</CardTitle>
+                    <BookOpen className="h-5 w-5 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-4 gap-4 items-center">
+                    <Badge variant="outline" className="px-3 py-1">Level: {quiz.difficultyLevel}</Badge>
+                    <Badge variant="outline" className="px-3 py-1">Questions: {quiz.numberOfQuestions}</Badge>
                     <Dialog>
+                      <Badge variant="outline" className="px-3 py-1">Type: {quiz.typeOfQuestions.join(', ')}</Badge>
                       <DialogTrigger asChild>
-                        <Button variant="outline">View Details</Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedQuiz(quiz);
+                            fetchQuestions(quiz.id);
+                          }}
+                        >
+                          View Details
+                        </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <div className="flex items-center justify-between">
-                            <DialogTitle className="text-2xl">{quiz.title}</DialogTitle>
-                            
-                          </div>
-                        </DialogHeader>
-                        <div className="mt-6">
-                          <div className="flex gap-4 mb-6">
-                            <Badge variant="outline" className="px-3 py-1">
-                              Type: {quiz.type.join(', ')}
-                            </Badge>
-                            <Badge variant="outline" className="px-3 py-1">
-                              Level: {quiz.level}
-                            </Badge>
-                          </div>
-                          <div className="space-y-6">
-                            {quiz.questions.map((q, index) => (
-                              <div key={index} className="bg-slate-900 p-4 rounded-lg text-white">
-                                <h4 className="font-medium mb-3 text-lg">{`Question ${index + 1}: ${q.question}`}</h4>
-                                {'options' in q ? (
-                                  <div className="space-y-2 ml-4">
-                                    {q.options.map((option, optIndex) => (
-                                      <div key={optIndex} className="flex items-center gap-2">
-                                        <span className="w-6 h-6 rounded-full bg-white border flex items-center justify-center text-sm text-black">
-                                          {String.fromCharCode(65 + optIndex)}
-                                        </span>
-                                        <span className="text-lg">{option}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <div className="ml-4 text-slate-300">
-                                    Fill in the blank answer: <span className="font-semibold">{q.answer}</span>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </DialogContent>
                     </Dialog>
-                  </div>
-                </div>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div>No quizzes found.</div>
+            )}
           </div>
-        </main>
+        </div>
       </div>
+
+      {/* Quiz Details Dialog */}
+      {selectedQuiz && (
+        <Dialog open={!!selectedQuiz} onOpenChange={() => setSelectedQuiz(null)}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">{selectedQuiz.topic}</DialogTitle>
+            </DialogHeader>
+            <div className="mt-6">
+              <div className="space-y-6">
+                {questions[selectedQuiz.id] && questions[selectedQuiz.id].length > 0 ? (
+                  questions[selectedQuiz.id].map((question) => (
+                    <div key={question.id} className="border p-4 rounded-lg mt-2 bg-white shadow">
+                      <Input
+                        value={editedQuestions[`${question.type}-${question.id}`]?.questionText || question.questionText}
+                        onChange={(e) => handleEditChange(question, 'questionText', e.target.value)}
+                      />
+                      <Textarea
+                        value={editedQuestions[`${question.type}-${question.id}`]?.correctAnswer || question.correctAnswer || question.correctAnswers}
+                        onChange={(e) => handleEditChange(question, 'correctAnswer', e.target.value)}
+                      />
+                      {/* <div className="flex justify-between mt-2">
+                        <Button variant="secondary" size="sm" onClick={() => handleSaveChanges(question)}>
+                          <Save className="h-4 w-4 mr-1" /> Save
+                        </Button>
+                        <Button variant="destructive" size="sm" onClick={() => handleDeleteQuestion(selectedQuiz.id, question)}>
+                          <Trash2 className="h-4 w-4 mr-1" /> Delete
+                        </Button>
+                      </div> */}
+                    </div>
+                  ))
+                ) : (
+                  <p>No questions found.</p>
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

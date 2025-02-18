@@ -131,7 +131,7 @@ function CreateQuizPDF() {
         });
         
 
-        createGoogleForm(allQuestions);
+        // createGoogleForm(allQuestions);
       } catch (error) {
         console.error("Error processing PDF:", error);
       } finally {
@@ -140,43 +140,43 @@ function CreateQuizPDF() {
     },
   });
 
-  const createGoogleForm = async (questions: Question[]) => {
-    if (!questions.length) return;
+  // const createGoogleForm = async (questions: Question[]) => {
+  //   if (!questions.length) return;
 
-    const apiUrl =
-      "https://script.google.com/macros/s/AKfycbzjUouIv_H3wubcvCCO5yWL5qGh6hLgrV6tJ0vDvD8/dev";
-    const quizData = {
-      title: "AI-Generated Quiz",
-      questions: questions.map((q) => ({
-        question: q.question,
-        options: q.options || [],
-        correctIndex: q.options
-          ? Array.isArray(q.answer)
-            ? q.answer
-                .map((ans) => q.options?.indexOf(ans))
-                .filter((i) => i !== -1)
-            : q.options.indexOf(q.answer)
-          : -1,
-      })),
-    };
+  //   const apiUrl =
+  //     "https://script.google.com/macros/s/AKfycbzjUouIv_H3wubcvCCO5yWL5qGh6hLgrV6tJ0vDvD8/dev";
+  //   const quizData = {
+  //     title: "AI-Generated Quiz",
+  //     questions: questions.map((q) => ({
+  //       question: q.question,
+  //       options: q.options || [],
+  //       correctIndex: q.options
+  //         ? Array.isArray(q.answer)
+  //           ? q.answer
+  //               .map((ans) => q.options?.indexOf(ans))
+  //               .filter((i) => i !== -1)
+  //           : q.options.indexOf(q.answer)
+  //         : -1,
+  //     })),
+  //   };
 
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        mode: "cors",
-        body: JSON.stringify(quizData),
-      });
-      const data = await response.json();
-      if (data.success) {
-        setGoogleFormLink(data.url);
-      } else {
-        console.error("Error:", data.error);
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
+  //   try {
+  //     const response = await fetch(apiUrl, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       mode: "cors",
+  //       body: JSON.stringify(quizData),
+  //     });
+  //     const data = await response.json();
+  //     if (data.success) {
+  //       setGoogleFormLink(data.url);
+  //     } else {
+  //       console.error("Error:", data.error);
+  //     }
+  //   } catch (error) {
+  //     console.error("Fetch error:", error);
+  //   }
+  // };
 
   const extractTextFromPDF = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -289,7 +289,7 @@ function CreateQuizPDF() {
                     </p>
                   </div>
                 ))}
-                {googleFormLink && (
+                {/* {googleFormLink && (
                   <div className="mt-4 p-4 border rounded-lg bg-gray-100 text-center">
                     <p className="text-lg font-semibold text-gray-800">
                       Google Form Created!
@@ -303,7 +303,7 @@ function CreateQuizPDF() {
                       Open Google Form
                     </a>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>

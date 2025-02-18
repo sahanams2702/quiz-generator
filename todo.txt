@@ -1,0 +1,9 @@
+1. Endpoints
+    - auth (login, signup) //completed
+    - users (getall, [id] update, delete, getbyid) 
+    - quizzes (create one,  getall, [userid/[id]] getbyUserId, [id] delete, get)
+    - questions (getall,[quiz/[quizid]] getByQuizId, [id] update, delete, get)
+
+2. Actions
+3. Frontend logic
+4. Return of data(the data responses)
