@@ -5,6 +5,9 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import {
   Brain,
   LayoutDashboard,
@@ -16,15 +19,25 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Create Quiz', href: '/dashcreate/page.jsx', icon: PlusCircle },
-  { name: 'History', href: '/dashhistory', icon: History },
-  { name: 'Profile', href: '/dashboard/profile', icon: UserCircle },
+  { name: 'Create Quiz', href: '/create-quiz', icon: PlusCircle },
+  { name: 'Create Quiz PDF', href: '/create-quiz-pdf', icon: PlusCircle },
+  { name: 'History', href: '/history', icon: History },
+  { name: 'Profile', href: '/profile', icon: UserCircle },
 ];
 
-export function DashboardNav() {
+export default function DashboardNav() {
+  const router = useRouter();
   const pathname = usePathname();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/');
+    }
+    catch (error) {
+      console.error('Error logging out:', error);
+    }
+
     // TODO: Implement logout logic
   };
 
@@ -33,7 +46,9 @@ export function DashboardNav() {
       <div className="flex h-14 items-center border-b px-4">
         <Link href="/dashboard" className="flex items-center space-x-2">
           <Brain className="h-6 w-6 text-primary" />
-          <span className="font-bold">QuizeZ</span>
+          <span className="font-bold text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-orange-500 bg-clip-text">
+  QuizEZ</span>
+
         </Link>
       </div>
 

@@ -19,9 +19,11 @@ model User {
   email     String  @unique
   password  String
   createdAt DateTime @default(now())
+  isAdmin   Boolean @default(false) // New field to determine admin status
 
-  quizzes Quiz[] // No need to define onDelete here
+  quizzes   Quiz[] 
 }
+
 
 model Quiz {
   id               Int     @id @default(autoincrement())

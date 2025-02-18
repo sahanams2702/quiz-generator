@@ -5,19 +5,19 @@ export async function GET(req, { params }) {
     const questions = []
 
     const quizId = Number(params.id);
-    const mcqQuestions = await prisma.mcq.findMany({
+    const mcqQuestions = await prisma.MCQ.findMany({
         where: {
             quizId
         }
     });
 
-    const msqQuestions = await prisma.msq.findMany({
+    const msqQuestions = await prisma.MSQ.findMany({
         where: {
             quizId
         }
     });
 
-    const fibQuestions = await prisma.fib.findMany({
+    const fibQuestions = await prisma.FIB.findMany({
         where: {
             quizId
         }

@@ -1,30 +1,61 @@
+'use client';
+
 import { Brain, Target, Users, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Header from '@/components/header';
-
+import Footer from '@/components/footer';
+import { useEffect, useState } from 'react';
+import {getNumberOfQuizzes, getNumberOfUsers} from './action';
 export default function About() {
+
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
+  const [numberOfQuizzes, setNumberOfQuizzes] = useState(0);
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+          const userCount = await getNumberOfUsers();
+          setNumberOfUsers(userCount);
+      } catch (error) {
+          console.error("Error fetching user count:", error);
+      }
+  };
+  fetchUserCount();
+
+  const fetchQuizCount = async () => {
+    try {
+        const quizCount = await getNumberOfQuizzes();
+        setNumberOfQuizzes(quizCount);
+    } catch (error) {
+        console.error("Error fetching quiz count:", error);
+    }
+  }
+  fetchQuizCount();
+
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       
       <Header/>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-2 px-4">
         <div className="container mx-auto text-center md:flex items-center justify-between">
           <div className="md:w-1/2">
-            <h1 className="text-4xl font-bold mb-6">About QuizGenius</h1>
+          <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500">About QuizEZ
+          </h1>
+
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We're revolutionizing learning through AI-powered quizzes and personalized education.
-              Our mission is to make learning more engaging, effective, and accessible for everyone.
+            "We’re revolutionizing learning with AI-powered quizzes that enhances your progress, making education more engaging and personalized. Our mission is to empower learners through dynamic, real-time feedback and tailored challenges for every subject".
             </p>
           </div>
           <div className="md:w-1/2 mt-8 md:mt-0">
             <img 
-              src="/assets/images/about.jpg" 
+              src="/assets/images/about.png" 
               alt="QuizGenius Hero" 
-              className="rounded-lg shadow-lg object-cover w-full h-full"
+              className="rounded-lg shadow-lg object-cover w-full h-full opacity-85"
             />
           </div>
         </div>
@@ -32,24 +63,24 @@ export default function About() {
 
       {/* Features Grid */}
       <section className="py-16 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="container mx-auto px-4 ">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 ">
             <FeatureCard
               icon={Brain}
-              title="AI-Powered Learning"
-              description="Our advanced AI algorithms create personalized quizzes tailored to your learning style and progress."
+              title="Transforming Learning with AI"
+              description="We revolutionize education by harnessing AI technology to create personalized quizzes that adapt to your learning style and progress, making education more engaging and effective.."
               image="/assets/images/ab1.jpg"
             />
             <FeatureCard
               icon={Target}
-              title="Targeted Practice"
-              description="Focus on areas where you need improvement with our adaptive learning system."
+              title="Our Technology"
+              description="Using the advanced AI models, our platform dynamically generates quizzes on-the-fly with real-time feedback, personalized recommendations, and adaptive learning features ensuring continuous learning improvement."
               image="/assets/images/ab2.webp"
             />
             <FeatureCard
               icon={Users}
-              title="Community Learning"
-              description="Join a community of learners and share knowledge through collaborative features."
+              title="Our Commitment"
+              description="We are committed to building an adaptive learning platform that evolves with you, tracking performance and providing personalized resources to make learning efficient, enjoyable, and tailored to your needs"
               image="/assets/images/ab3.webp"
             />
           </div>
@@ -60,35 +91,14 @@ export default function About() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <StatCard number="10k+" label="Active Users" />
-            <StatCard number="50k+" label="Quizzes Completed" />
-            <StatCard number="95%" label="Success Rate" />
-            <StatCard number="100+" label="Topics Covered" />
+            <StatCard number={`${numberOfUsers}+`} label="Number of Users" />
+            <StatCard number={`${numberOfQuizzes}+`} label="Number of Quizzes generated" />
+            <StatCard number="9" label="Active users" />
+            <StatCard number="10+" label="Topics Covered" />
           </div>
         </div>
       </section>
-
-      {/* Team Section */}
-      <section className="py-16 bg-card">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Mission</h2>
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <Award className="h-12 w-12 mx-auto text-primary mb-4" />
-            <p className="text-lg text-muted-foreground">
-              At QuizGenius, we believe that everyone deserves access to high-quality education.
-              Our platform combines cutting-edge AI technology with proven learning methodologies
-              to create an engaging and effective learning experience.
-            </p>
-            <div>
-              <img 
-                src="/assets/images/ab4.webp" 
-                alt="Our Team"
-                className="rounded-lg shadow-lg w-full h-auto"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <Footer/>
     </div>
   );
 }
