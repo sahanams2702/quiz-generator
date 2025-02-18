@@ -1,3 +1,4 @@
+AIzaSyCWMK7iPNzSjE8a6xqqXHbuT8E2bcfs9Lo
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
