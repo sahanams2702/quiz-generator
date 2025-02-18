@@ -64,7 +64,9 @@ function CreateQuiz() {
       try {
         const questions = await generateTextAPI(values);
         console.log("Fetched Questions:", questions); // Log the questions data to inspect it
-        if (questions.success && questions.questions) {
+    
+        // Check if 'questions' exists in the response and is an array
+        if (questions && Array.isArray(questions.questions)) {
           setGeneratedQuestions(questions.questions); // Directly set the questions
           // Show success SweetAlert with Continue button
           await Swal.fire({
@@ -74,21 +76,21 @@ function CreateQuiz() {
             confirmButtonText: "Continue",
             confirmButtonColor: "#2d3748", 
             customClass: {
-              confirmButton:
-                "bg-gray-800 text-white hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+              confirmButton: "bg-gray-800 text-white hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
             },
           }).then(() => {
-            setShowPopover(true); 
+            setShowPopover(true);
           });
         } else {
-          console.error("Error generating quiz:", questions.error);
+          console.error("Error generating quiz: No questions found in the response");
         }
       } catch (error) {
-        console.error("Error processing PDF:", error);
+        console.error("Error processing quiz generation:", error);
       } finally {
         setIsLoading(false);
       }
-    },
+    }
+    
   });
 
   const questionTypeOptions: { value: QuestionType; label: string }[] = [
@@ -130,11 +132,11 @@ function CreateQuiz() {
       let correctAnsText = Array.isArray(q.answer)
         ? q.answer.join(", ")
         : q.answer;
-      doc.setTextColor(0, 128, 0); // Set green color for correct answer
+      doc.setTextColor(0, 128, 0); 
       doc.text(`✔ Correct Answer: ${correctAnsText}`, 10, yPosition);
-      doc.setTextColor(0, 0, 0); // Reset text color to black
+      doc.setTextColor(0, 0, 0); 
 
-      yPosition += 10; // Space before next question
+      yPosition += 10; 
     });
 
     doc.save("quiz.pdf");
