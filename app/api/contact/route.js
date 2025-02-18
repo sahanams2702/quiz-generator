@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 

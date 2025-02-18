@@ -152,7 +152,6 @@ Correct Answer: ${q.answer}
           </div>
         </div>
 
-     
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Quick Quiz Form */}
           <div className="relative bg-white dark:bg-black rounded-xl p-6 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
