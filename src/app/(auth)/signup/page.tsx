@@ -21,7 +21,7 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
@@ -95,6 +95,7 @@ export default function SignUp() {
       const res = await signupUser(userData);
       if (res.error) {
         setIsLoading(false);
+        setError('User already exists.');
         return;
       }
     } catch {
@@ -104,7 +105,7 @@ export default function SignUp() {
 
     setIsLoading(false);
     toast({ title: 'Success', description: 'Account created successfully!' });
-    router.push('/signin');
+    router.push('/login');
   };
 
   return (
@@ -181,7 +182,7 @@ export default function SignUp() {
                     />
                     {confirmPasswordError && <p className="text-sm text-red-500">{confirmPasswordError}</p>}
                   </div>
-
+                  {error && <div className="text-sm text-red-500 text-center">{error}</div>}
                   <Button
                     className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-opacity-50"
                     type="submit"

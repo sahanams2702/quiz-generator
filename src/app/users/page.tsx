@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Sidebar } from '@/components/dashboard/sidebar';
@@ -9,24 +9,57 @@ import { Trash2, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-const initialParticipants = [
-  { id: 1, name: 'John Doe', email: 'john@example.com', quizzesGenerated: 8  },
-  { id: 2, name: 'Jane Smith', email: 'jane@example.com', quizzesGenerated: 12 },
-  { id: 3, name: 'Mike Johnson', email: 'mike@example.com', quizzesGenerated: 5  },
-  { id: 4, name: 'Sarah Wilson', email: 'sarah@example.com', quizzesGenerated: 15  },
-  { id: 5, name: 'David Brown', email: 'david@example.com', quizzesGenerated: 7 },
-];
+import {deleteUser, getUsersWithQuizCount} from './action';
+import swal from 'sweetalert2';
 
 export default function Users() {
-  const [participants, setParticipants] = useState(initialParticipants);
   const [searchQuery, setSearchQuery] = useState('');
+  const [users, setUsers] = useState([]);
 
-  const handleDelete = (id: number) => {
-    setParticipants(participants.filter(participant => participant.id !== id));
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const users = await getUsersWithQuizCount();
+      console.log(users[2]);
+      setUsers(users);
+    };
+
+    fetchUsers();
+  }, [])
+
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await deleteUser(id);
+      if(res.success) {
+        setUsers((prevUsers) => prevUsers.filter(user => user.id !== id)); // Remove user from state
+
+        swal.fire({
+          title: "<strong>User Deleted</strong>",
+          icon: "",
+          showCloseButton: false,
+          showConfirmButton: false,
+          showCancelButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          customClass: {
+            popup: '!bg-black !text-white',
+            title: 'text-transparent bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 bg-clip-text',
+            timerProgressBar: 'bg-purple-500',
+          },
+          background: '#000',
+        });
+  
+      }
+      else {
+        alert("User deletion failed");
+      }
+    }
+    catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
-  const filteredParticipants = participants.filter(participant =>
-    participant.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -51,33 +84,33 @@ export default function Users() {
         </header>
         <main className="p-6">
           <div className="grid gap-4">
-            {filteredParticipants.map((participant) => (
-              <Card key={participant.id} className="p-6">
+            {filteredUsers.map((user) => (
+              <Card key={user.id} className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <Avatar>
                       <AvatarFallback>
-                        {participant.name
+                        {user.name
                           .split(' ')
                           .map((n) => n[0])
                           .join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="text-lg font-medium">{participant.name}</h3>
-                      <p className="text-sm text-muted-foreground">{participant.email}</p>
+                      <h3 className="text-lg font-medium">{user.name}</h3>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-8">
                     <div className="text-center">
-                      <p className="text-2xl font-bold">{participant.quizzesGenerated}</p>
+                      <p className="text-2xl font-bold">{user.quizCount}</p>
                       <p className="text-sm text-muted-foreground">Quizzes Generated</p>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                      onClick={() => handleDelete(participant.id)}
+                      onClick={() => handleDelete(user.id)}
                     >
                       <Trash2 className="h-5 w-5" />
                     </Button>

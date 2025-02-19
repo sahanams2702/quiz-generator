@@ -5,5 +5,5 @@ export async function getQuizzes() {
     const id = idObj.data.userId;
     console.log(id);
     const quizzes = await axios.get(`/api/quizzes/users/${id}`);
-    return quizzes;
+    return quizzes.data;
 }

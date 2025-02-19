@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function GET(req) {
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({
+            where: {
+                isAdmin: false,  // Exclude admins
+            },
+        });
         return NextResponse.json(users, { status: 200 });
     } catch (error) {
         console.error("Fetch users error:", error);
