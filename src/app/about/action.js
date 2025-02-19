@@ -12,3 +12,14 @@ export async function getNumberOfQuizzes() {
     const count = res.data.length;
     return count;
 }
+
+
+export async function getNumberOfQuestions() {
+    const res = await axios.get("/api/quizzes");
+    let total = 0;
+    for (let i = 0; i < res.data.length; i++) {
+        const quiz = res.data[i];
+        total += quiz.numberOfQuestions;
+    }
+    return total;
+}

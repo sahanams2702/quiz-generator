@@ -6,30 +6,34 @@ async function middleware(req: NextRequest) {
     const userId = (await cookies()).get("user_id")?.value;
     const userRole = (await cookies()).get("user_role")?.value;
     console.log(userId, userRole);
-    const protectedRoutes = ["/dashboard", "/history", "/profile"];
-    const adminRoutes = ["/overview", "/adminprofile", "/admin/analytics"];
+    const protectedRoutes = ["/dashboard", "/history", "/profile", "/create-quiz", "/create-quiz-pdf"];
+    const adminRoutes = ["/overview", "/adminprofile"];
 
     const { pathname } = req.nextUrl;
     console.log(pathname);
-    // Redirect to login if accessing protected routes without authentication
+
     if ([...protectedRoutes, ...adminRoutes].includes(pathname)) {
         if (!userId) {
-            return NextResponse.redirect(new URL("/signin", req.url));
+            return NextResponse.redirect(new URL("/login", req.url));
         }
     }
 
-    // Redirect to "Not Authorized" if a normal user tries to access admin routes
     if (adminRoutes.includes(pathname)) {
         if (userRole !== "admin") {
-            return NextResponse.redirect(new URL("/signin", req.url));
+            return NextResponse.redirect(new URL("/login", req.url));
         }
     }
 
+    if(protectedRoutes.includes(pathname)) { 
+        if(userRole === "admin") {
+            return NextResponse.redirect(new URL("/login", req.url));
+        }
+    }
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/dashboard", "/overview", "/history", "/profile", "/admin/:path*"],
+    matcher: ["/dashboard", "/overview", "/history", "/profile", "/admindashboard", "/adminprofile", "/create-quiz-pdf", "/create-quiz"],
 };
 
 export default middleware;

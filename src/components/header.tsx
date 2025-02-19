@@ -29,11 +29,11 @@ const Header = () => {
         </nav>
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-          <Link href="/signin">
-            <Button variant="ghost">Sign In</Button>
+          <Link href="/login">
+            <Button variant="ghost">Login</Button>
           </Link>
           <Link href="/signup">
-            <Button>Get Started</Button>
+            <Button>Sign Up</Button>
           </Link>
         </div>
       </div>

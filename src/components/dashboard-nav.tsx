@@ -20,7 +20,7 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Create Quiz', href: '/create-quiz', icon: PlusCircle },
-  { name: 'Create Quiz PDF', href: '/create-quiz-pdf', icon: PlusCircle },
+  { name: 'PDF To Quiz', href: '/create-quiz-pdf', icon: PlusCircle },
   { name: 'History', href: '/history', icon: History },
   { name: 'Profile', href: '/profile', icon: UserCircle },
 ];

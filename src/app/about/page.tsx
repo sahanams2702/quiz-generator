@@ -7,11 +7,12 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { useEffect, useState } from 'react';
-import {getNumberOfQuizzes, getNumberOfUsers} from './action';
+import {getNumberOfQuestions, getNumberOfQuizzes, getNumberOfUsers} from './action';
 export default function About() {
 
   const [numberOfUsers, setNumberOfUsers] = useState(0);
   const [numberOfQuizzes, setNumberOfQuizzes] = useState(0);
+  const [numberOfQuestions, setNumberOfQuestions] = useState(0);
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
@@ -27,6 +28,8 @@ export default function About() {
     try {
         const quizCount = await getNumberOfQuizzes();
         setNumberOfQuizzes(quizCount);
+        const questionsCount = await getNumberOfQuestions();
+        setNumberOfQuestions(questionsCount);
     } catch (error) {
         console.error("Error fetching quiz count:", error);
     }
@@ -93,7 +96,7 @@ export default function About() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <StatCard number={`${numberOfUsers}+`} label="Number of Users" />
             <StatCard number={`${numberOfQuizzes}+`} label="Number of Quizzes generated" />
-            <StatCard number="9" label="Active users" />
+            <StatCard number={`${numberOfQuestions}+`} label="Number Of Questions Generated" />
             <StatCard number="10+" label="Topics Covered" />
           </div>
         </div>

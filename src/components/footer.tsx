@@ -50,11 +50,11 @@ export default function Footer() {
             <ul className="space-y-2 text-xs">
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>support@quizeZ.com</span>
+                <span>quizez12@gmail.com</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+919876543210</span>
               </li>
             </ul>
           </div>
