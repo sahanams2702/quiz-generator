@@ -1,4 +1,8 @@
-// "use client";
+ "use client";
+export default function ForgotPassword() {
+    return <div>Forgot Password Page</div>;
+}
+
 // import { useState } from "react";
 // import { useRouter } from "next/navigation";
 // import { Button } from "@/components/ui/button";
