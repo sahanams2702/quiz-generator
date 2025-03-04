@@ -1,7 +1,1 @@
-[build]
-  environment = { GO_VERSION = "1.19" }
- command = "npm run build"   # Specifies the build command
-  publish = ".next"           # Defines the directory to deploy
 
-  [[plugins]]
-  package = "@netlify/plugin-nextjs"  # Enables the Netlify plugin for Next.js
